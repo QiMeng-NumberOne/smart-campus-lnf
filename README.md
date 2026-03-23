@@ -9,6 +9,7 @@ smart-campus-lnf/
 ├── docs/                # 项目文档（PRD、流程图、数据库、API）
 ├── frontend/            # 微信小程序前端
 ├── backend/             # Python FastAPI 后端
+├── yolo_model/          # yolo识别模型
 └── README.md
 ```
 
