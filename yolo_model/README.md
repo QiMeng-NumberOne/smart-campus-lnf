@@ -14,6 +14,16 @@
 | 身份证/校园卡 | id\_card | 身份证、学生证、校园卡等证件类物品   |
 | 眼镜      | glasses  | 近视眼镜、太阳镜等各类眼镜       |
 
+#### 训练效果
+
+| 训练批次 | 图片 |
+|---------|------|
+| 批次 0 | <img src="runs/detect/campus_lost_v8/train_batch0.jpg" width="400"> |
+| 批次 1 | <img src="runs/detect/campus_lost_v8/train_batch1.jpg" width="400"> |
+| 批次 2 | <img src="runs/detect/campus_lost_v8/train_batch2.jpg" width="400"> |
+| 批次 3 | <img src="runs/detect/campus_lost_v8/train_batch3.png" width="400"> |
+
+
 ## 项目结构
 
 ```
