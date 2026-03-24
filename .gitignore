@@ -1,15 +1,17 @@
-# 1. 忽略所有庞大的图片数据集
-datasets/
-origindata/
+# Virtual Environment
+backend/venv/
+venv/
+env/
+.env
 
-# 2. 忽略 YOLO 训练过程中产生的海量缓存和日志
-*.cache
-runs/
-
-# 3. 忽略 Python 的运行缓存（常规操作）
+# Python Cache
 __pycache__/
-.DS_Store
+*.py[cod]
+*$py.class
 
-# 4. 忽略 Office 临时文件
-~$*
-*.tmp
+# IDE
+.idea/
+.vscode/
+
+# Logs
+*.log
