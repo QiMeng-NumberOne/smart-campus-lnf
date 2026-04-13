@@ -1,0 +1,39 @@
+<view class="container">
+  <view class="publish-header">
+    <view bindtap="goBack">返回</view>
+    <view class="publish-header-title">系统通知</view>
+    <view></view>
+  </view>
+  <view class="list">
+    <view class="item">
+      <view class="icon">
+        <text class="icon-text">系</text>
+      </view>
+      <view class="content">
+        <text class="title">系统维护通知</text>
+        <text class="desc">系统将于今晚23:00-次日凌晨2:00进行维护，期间部分功能可能暂时不可用。</text>
+        <text class="time">2026-04-13 09:00</text>
+      </view>
+    </view>
+    <view class="item">
+      <view class="icon">
+        <text class="icon-text">系</text>
+      </view>
+      <view class="content">
+        <text class="title">新功能上线</text>
+        <text class="desc">失物招领小程序新增物品智能匹配功能，快来体验吧！</text>
+        <text class="time">2026-04-10 14:30</text>
+      </view>
+    </view>
+    <view class="item">
+      <view class="icon">
+        <text class="icon-text">系</text>
+      </view>
+      <view class="content">
+        <text class="title">安全提醒</text>
+        <text class="desc">请不要在平台上泄露个人敏感信息，谨防诈骗。</text>
+        <text class="time">2026-04-05 10:00</text>
+      </view>
+    </view>
+  </view>
+</view>

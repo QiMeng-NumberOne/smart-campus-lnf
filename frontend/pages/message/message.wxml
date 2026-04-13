@@ -1,0 +1,52 @@
+<view class="container">
+  <view class="publish-header">
+    <view bindtap="goBack">返回</view>
+    <view class="publish-header-title">消息通知</view>
+    <view></view>
+  </view>
+  
+  <view class="menu-section">
+    <view class="menu-item" bindtap="goToSystemNotification">
+      <view class="menu-left">
+        <view class="menu-icon">📢</view>
+        <view class="menu-title">系统通知</view>
+      </view>
+      <view class="menu-right">
+        <span style="font-size: 12px; color: #999;">2条新消息</span>
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goToMatchNotification">
+      <view class="menu-left">
+        <view class="menu-icon">🔍</view>
+        <view class="menu-title">匹配通知</view>
+      </view>
+      <view class="menu-right">
+        <span style="font-size: 12px; color: #999;">1条新消息</span>
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goToReplyNotification">
+      <view class="menu-left">
+        <view class="menu-icon">💬</view>
+        <view class="menu-title">回复通知</view>
+      </view>
+      <view class="menu-right">
+        <span style="font-size: 12px; color: #999;">0条新消息</span>
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="menu-section">
+    <view class="menu-item" bindtap="goToMessageSettings">
+      <view class="menu-left">
+        <view class="menu-icon">⚙️</view>
+        <view class="menu-title">消息设置</view>
+      </view>
+      <view class="menu-right">
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+  </view>
+</view>

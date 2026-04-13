@@ -1,0 +1,59 @@
+<view class="container">
+  <view class="home-header">
+    <view>
+      <view class="home-header-title">校园失物招领</view>
+      <view class="home-header-subtitle">清华大学校园平台</view>
+    </view>
+    <view class="home-header-icon">
+      🔔
+    </view>
+  </view>
+  
+  <view class="search-bar">
+    <view class="search-input">
+      🔍
+      <input type="text" placeholder="搜索失物或招领..." bindconfirm="handleSearch" />
+      <button class="filter-btn">筛选</button>
+    </view>
+  </view>
+  
+  <view class="tab-nav">
+    <view class="tab-item {{currentTab === 'lost' ? 'active' : ''}}" bindtap="switchTab" data-type="lost">
+      🔍 寻物启事
+    </view>
+    <view class="tab-item {{currentTab === 'found' ? 'active' : ''}}" bindtap="switchTab" data-type="found">
+      📋 失物招领
+    </view>
+  </view>
+  
+  <view class="category-nav">
+    <view class="category-item {{currentCategory === '全部' ? 'active' : ''}}" bindtap="switchCategory" data-category="全部">全部</view>
+    <view class="category-item {{currentCategory === '电子设备' ? 'active' : ''}}" bindtap="switchCategory" data-category="电子设备">电子设备</view>
+    <view class="category-item {{currentCategory === '证件' ? 'active' : ''}}" bindtap="switchCategory" data-category="证件">证件</view>
+    <view class="category-item {{currentCategory === '服装' ? 'active' : ''}}" bindtap="switchCategory" data-category="服装">服装</view>
+    <view class="category-item {{currentCategory === '其他' ? 'active' : ''}}" bindtap="switchCategory" data-category="其他">其他</view>
+  </view>
+  
+  <view class="success-banner">
+    ✅ 本周已成功帮助 47 位同学找回失物
+  </view>
+  
+  <view class="items-grid">
+    <view class="item-card" wx:for="{{items}}" wx:key="id" bindtap="handleItemClick" data-id="{{item.id}}">
+      <view class="item-image">
+        <view class="item-tag">{{item.type === 'lost' ? '寻物' : '招领'}}</view>
+        <view wx:if="item.commentCount" class="item-tag" style="right: 8px; left: auto; background-color: #4caf50;">{{item.commentCount}}</view>
+      </view>
+      <view class="item-info">
+        <view class="item-title">{{item.title}}</view>
+        <view class="item-location">{{item.location}} · {{item.date}}</view>
+        <view style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
+          <view class="item-user">{{item.user}}</view>
+          <view class="item-views">{{item.views}} 浏览</view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="publish-btn" bindtap="goToPublish">+</view>
+</view>

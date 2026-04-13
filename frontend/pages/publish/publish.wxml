@@ -1,0 +1,90 @@
+<view class="container">
+  <view class="publish-header">
+    <view bindtap="goBack">返回</view>
+    <view class="publish-header-title">发布寻物启事</view>
+    <view class="publish-header-btn" bindtap="togglePublishType" data-type="lost">失物</view>
+  </view>
+  
+  <view class="publish-form">
+    <view class="form-section">
+      <view class="form-label">上传照片</view>
+      <view class="form-hint">最多6张</view>
+      <view class="upload-area">
+        <view class="upload-item" bindtap="chooseImage">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="8" y1="12" x2="16" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+          </svg>
+          <view>添加照片</view>
+        </view>
+      </view>
+    </view>
+    
+    <view class="form-section">
+      <view class="form-label">物品分类</view>
+      <view class="form-select" bindtap="chooseCategory">
+        选择物品类型
+        <view class="form-arrow">></view>
+      </view>
+    </view>
+    
+    <view class="form-section">
+      <view class="form-label">物品名称</view>
+      <input type="text" class="form-input" placeholder="请输入物品名称" value="{{formData.title}}" bindinput="onTitleChange" />
+    </view>
+    
+    <view class="form-section">
+      <view class="form-label">详细描述</view>
+      <textarea class="form-textarea" placeholder="请描述物品的颜色、品牌、特征等，越详细越容易找到..." value="{{formData.description}}" bindinput="onDescriptionChange" maxlength="200"></textarea>
+      <view class="form-counter">{{formData.description.length}}/200</view>
+    </view>
+    
+    <view class="form-section">
+      <view class="form-label">丢失时间</view>
+      <view class="form-select" bindtap="chooseTime">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        {{formData.lostTime}}
+        <view class="form-arrow">></view>
+      </view>
+    </view>
+    
+    <view class="form-section">
+      <view class="form-label">丢失地点</view>
+      <view class="form-select" bindtap="chooseLocation">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+          <circle cx="12" cy="10" r="3"></circle>
+        </svg>
+        {{formData.location || '选择地点'}}
+        <view class="form-arrow">></view>
+      </view>
+    </view>
+    
+    <view class="form-section">
+      <view class="form-label">联系方式</view>
+      <view class="contact-options">
+        <view class="contact-option {{selectedContactMethod === 'phone' ? 'active' : ''}}" bindtap="selectContactMethod" data-method="phone">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+          </svg>
+          手机号
+        </view>
+        <view class="contact-option {{selectedContactMethod === 'wechat' ? 'active' : ''}}" bindtap="selectContactMethod" data-method="wechat">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a73e8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+          </svg>
+          微信号
+        </view>
+      </view>
+      <input type="text" class="form-input" placeholder="请输入联系方式" value="{{formData.contactInfo}}" bindinput="onContactChange" />
+    </view>
+  </view>
+  
+  <view class="publish-submit">
+    <button class="submit-btn" bindtap="submitPublish">发布寻物启事</button>
+  </view>
+</view>

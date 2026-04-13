@@ -1,0 +1,206 @@
+/* 个人中心页面样式 */
+.container {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.profile-header {
+  background: linear-gradient(135deg, #1a73e8, #0d47a1);
+  color: white;
+  padding: 24px 16px;
+}
+
+.profile-user {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.profile-avatar {
+  position: relative;
+  margin-right: 16px;
+}
+
+.profile-avatar image {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: 2px solid white;
+}
+
+.avatar-badge {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background-color: #4caf50;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid white;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-name {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.profile-detail {
+  font-size: 12px;
+  opacity: 0.9;
+  margin-bottom: 8px;
+}
+
+.profile-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.tag {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 2px 8px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.profile-qrcode {
+  margin-left: 16px;
+}
+
+.qrcode-btn {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 6px 12px;
+  font-size: 12px;
+}
+
+.profile-stats {
+  display: flex;
+  justify-content: space-around;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.stat-item {
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.stat-label {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.level-card {
+  background-color: white;
+  margin: 12px 16px;
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.level-icon {
+  font-size: 24px;
+}
+
+.level-info {
+  flex: 1;
+}
+
+.level-title {
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+.level-text {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.level-bar {
+  height: 4px;
+  background-color: #f0f0f0;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.level-fill {
+  height: 100%;
+  background-color: #1a73e8;
+  border-radius: 2px;
+}
+
+.menu-section {
+  background-color: white;
+  margin-bottom: 12px;
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.menu-item:last-child {
+  border-bottom: none;
+}
+
+.menu-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.menu-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+}
+
+.menu-title {
+  font-size: 14px;
+  color: #333;
+}
+
+.menu-badge {
+  font-size: 12px;
+  color: #999;
+  margin-left: 8px;
+}
+
+.menu-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.menu-arrow {
+  color: #999;
+  font-size: 14px;
+}
