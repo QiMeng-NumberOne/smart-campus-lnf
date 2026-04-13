@@ -1,0 +1,29 @@
+<view class="container">
+  <view class="publish-header">
+    <view bindtap="goBack">返回</view>
+    <view class="publish-header-title">匹配通知</view>
+    <view></view>
+  </view>
+  <view class="list">
+    <view class="item">
+      <view class="icon">
+        <text class="icon-text">匹</text>
+      </view>
+      <view class="content">
+        <text class="title">物品匹配成功</text>
+        <text class="desc">您发布的寻物启事与一条失物招领信息匹配度较高，点击查看详情。</text>
+        <text class="time">2026-04-13 10:30</text>
+      </view>
+    </view>
+    <view class="item">
+      <view class="icon">
+        <text class="icon-text">匹</text>
+      </view>
+      <view class="content">
+        <text class="title">物品匹配成功</text>
+        <text class="desc">您发布的失物招领信息与一条寻物启事匹配度较高，点击查看详情。</text>
+        <text class="time">2026-04-12 15:45</text>
+      </view>
+    </view>
+  </view>
+</view>

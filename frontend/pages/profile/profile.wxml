@@ -1,0 +1,124 @@
+<view class="container">
+  <view class="profile-header">
+    <view class="profile-user">
+      <view class="profile-avatar">
+        <image src="{{user.avatar || '/images/avatar.png'}}" mode="aspectFill"></image>
+        <view class="avatar-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </view>
+      </view>
+      <view class="profile-info">
+        <view class="profile-name">{{user.name || '未登录'}}</view>
+        <view class="profile-detail">{{user.school}} · {{user.grade}}</view>
+        <view class="profile-tags">
+          <view class="tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            在校学生
+          </view>
+          <view class="tag">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            已认证
+          </view>
+        </view>
+      </view>
+      <view class="profile-qrcode">
+        <view class="qrcode-btn">我的二维码</view>
+      </view>
+    </view>
+    <view class="profile-stats">
+      <view class="stat-item">
+        <view class="stat-number">{{user.stats.lostCount}}</view>
+        <view class="stat-label">发布失物</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{user.stats.foundCount}}</view>
+        <view class="stat-label">已找回</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{user.stats.claimCount}}</view>
+        <view class="stat-label">发布招领</view>
+      </view>
+      <view class="stat-item">
+        <view class="stat-number">{{user.stats.likes}}</view>
+        <view class="stat-label">获赞</view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="level-card">
+    <view class="level-icon">🏆</view>
+    <view class="level-info">
+      <view class="level-title">{{user.level.name}} · Lv.{{user.level.level}}</view>
+      <view class="level-progress">
+        <view class="level-text">信用积分 {{user.level.credit}} · 还需{{user.level.nextCredit - user.level.credit}}分升至Lv.{{user.level.level + 1}}</view>
+        <view class="level-bar">
+          <view class="level-fill" style="width: {{(user.level.credit / user.level.nextCredit) * 100}}%"></view>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="menu-section">
+    <view class="menu-item" bindtap="goToMyLost">
+      <view class="menu-left">
+        <view class="menu-icon">🔍</view>
+        <view class="menu-title">我的寻物</view>
+        <view class="menu-badge">{{user.stats.lostCount}}条进行中</view>
+      </view>
+      <view class="menu-right">
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goToMyClaim">
+      <view class="menu-left">
+        <view class="menu-icon">📋</view>
+        <view class="menu-title">我的招领</view>
+        <view class="menu-badge">{{user.stats.claimCount}}条已发布</view>
+      </view>
+      <view class="menu-right">
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goToFoundRecords">
+      <view class="menu-left">
+        <view class="menu-icon">✅</view>
+        <view class="menu-title">已找回记录</view>
+        <view class="menu-badge">{{user.stats.foundCount}}次成功找回</view>
+      </view>
+      <view class="menu-right">
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="menu-section">
+    <view class="menu-item" bindtap="goToAiMatch">
+      <view class="menu-left">
+        <view class="menu-icon">🤖</view>
+        <view class="menu-title">AI匹配记录</view>
+      </view>
+      <view class="menu-right">
+        <span style="font-size: 12px; color: #999;">查看历史匹配</span>
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+    <view class="menu-item" bindtap="goToNotification">
+      <view class="menu-left">
+        <view class="menu-icon">💬</view>
+        <view class="menu-title">消息通知</view>
+      </view>
+      <view class="menu-right">
+        <view class="menu-arrow">></view>
+      </view>
+    </view>
+  </view>
+</view>

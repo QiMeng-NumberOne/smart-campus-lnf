@@ -1,0 +1,65 @@
+<view class="container">
+  <view class="publish-header">
+    <view bindtap="goBack">返回</view>
+    <view class="publish-header-title">消息设置</view>
+    <view></view>
+  </view>
+  
+  <view class="menu-section">
+    <view class="menu-item">
+      <view class="menu-left">
+        <view class="menu-title">系统通知</view>
+      </view>
+      <view class="menu-right">
+        <label class="switch">
+          <input type="checkbox" checked="{{settings.systemNotification}}" bindchange="onSettingChange" data-key="systemNotification" />
+          <span class="slider round"></span>
+        </label>
+      </view>
+    </view>
+    <view class="menu-item">
+      <view class="menu-left">
+        <view class="menu-title">匹配通知</view>
+      </view>
+      <view class="menu-right">
+        <label class="switch">
+          <input type="checkbox" checked="{{settings.matchNotification}}" bindchange="onSettingChange" data-key="matchNotification" />
+          <span class="slider round"></span>
+        </label>
+      </view>
+    </view>
+    <view class="menu-item">
+      <view class="menu-left">
+        <view class="menu-title">回复通知</view>
+      </view>
+      <view class="menu-right">
+        <label class="switch">
+          <input type="checkbox" checked="{{settings.replyNotification}}" bindchange="onSettingChange" data-key="replyNotification" />
+          <span class="slider round"></span>
+        </label>
+      </view>
+    </view>
+    <view class="menu-item">
+      <view class="menu-left">
+        <view class="menu-title">声音提醒</view>
+      </view>
+      <view class="menu-right">
+        <label class="switch">
+          <input type="checkbox" checked="{{settings.soundRemind}}" bindchange="onSettingChange" data-key="soundRemind" />
+          <span class="slider round"></span>
+        </label>
+      </view>
+    </view>
+    <view class="menu-item">
+      <view class="menu-left">
+        <view class="menu-title">振动提醒</view>
+      </view>
+      <view class="menu-right">
+        <label class="switch">
+          <input type="checkbox" checked="{{settings.vibrationRemind}}" bindchange="onSettingChange" data-key="vibrationRemind" />
+          <span class="slider round"></span>
+        </label>
+      </view>
+    </view>
+  </view>
+</view>
