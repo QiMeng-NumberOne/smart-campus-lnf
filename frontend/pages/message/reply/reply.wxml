@@ -5,25 +5,16 @@
     <view></view>
   </view>
   <view class="list">
-    <view class="item">
+    <view class="item" wx:for="{{replyNotifications}}" wx:key="id" bindtap="openReply" data-id="{{item.id}}" data-item-id="{{item.itemId}}">
       <view class="icon">
         <text class="icon-text">回</text>
       </view>
       <view class="content">
-        <text class="title">有人回复了您的寻物启事</text>
-        <text class="desc">用户"小明"回复了您发布的寻物启事："我看到了您的钱包，请问在哪里可以联系您？"</text>
-        <text class="time">2026-04-13 11:20</text>
+        <text class="title">{{item.title}}</text>
+        <text class="desc">{{item.content}}</text>
+        <text class="time">{{item.time}}</text>
       </view>
     </view>
-    <view class="item">
-      <view class="icon">
-        <text class="icon-text">回</text>
-      </view>
-      <view class="content">
-        <text class="title">有人回复了您的失物招领</text>
-        <text class="desc">用户"小红"回复了您发布的失物招领："这是我的笔记本，谢谢您！"</text>
-        <text class="time">2026-04-12 16:30</text>
-      </view>
-    </view>
+    <view wx:if="{{!replyNotifications.length}}" class="empty">暂无回复通知</view>
   </view>
 </view>

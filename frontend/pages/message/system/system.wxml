@@ -5,35 +5,16 @@
     <view></view>
   </view>
   <view class="list">
-    <view class="item">
+    <view class="item" wx:for="{{systemNotifications}}" wx:key="id" bindtap="openMsg" data-id="{{item.id}}">
       <view class="icon">
         <text class="icon-text">系</text>
       </view>
       <view class="content">
-        <text class="title">系统维护通知</text>
-        <text class="desc">系统将于今晚23:00-次日凌晨2:00进行维护，期间部分功能可能暂时不可用。</text>
-        <text class="time">2026-04-13 09:00</text>
+        <text class="title">{{item.title}}</text>
+        <text class="desc">{{item.content}}</text>
+        <text class="time">{{item.time}}</text>
       </view>
     </view>
-    <view class="item">
-      <view class="icon">
-        <text class="icon-text">系</text>
-      </view>
-      <view class="content">
-        <text class="title">新功能上线</text>
-        <text class="desc">失物招领小程序新增物品智能匹配功能，快来体验吧！</text>
-        <text class="time">2026-04-10 14:30</text>
-      </view>
-    </view>
-    <view class="item">
-      <view class="icon">
-        <text class="icon-text">系</text>
-      </view>
-      <view class="content">
-        <text class="title">安全提醒</text>
-        <text class="desc">请不要在平台上泄露个人敏感信息，谨防诈骗。</text>
-        <text class="time">2026-04-05 10:00</text>
-      </view>
-    </view>
+    <view wx:if="{{!systemNotifications.length}}" class="empty">暂无消息</view>
   </view>
 </view>

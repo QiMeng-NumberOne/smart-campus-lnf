@@ -43,7 +43,7 @@
 .form-hint {
   font-size: 12px;
   color: #999;
-  margin-top: -8px;
+  margin-top: 0;
   margin-bottom: 12px;
 }
 
@@ -54,10 +54,12 @@
 }
 
 .upload-item {
+  position: relative;
   width: 80px;
   height: 80px;
   border: 1px dashed #e0e0e0;
   border-radius: 8px;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -65,6 +67,115 @@
   gap: 8px;
   color: #999;
   font-size: 12px;
+}
+
+.remove-btn {
+  position: absolute;
+  right: 4px;
+  top: 4px;
+  background: #f56c6c;
+  color: #fff;
+  border-radius: 10px;
+  padding: 2px 6px;
+  font-size: 12px;
+  line-height: 1;
+  z-index: 2;
+}
+
+.ai-suggest-row {
+  margin-top: 12px;
+}
+
+.ai-btn {
+  width: 100%;
+  background: #eef4ff;
+  color: #1a73e8;
+  border: 1px solid #c9dbff;
+}
+
+.ai-tip {
+  margin-top: 8px;
+  font-size: 12px;
+  color: #666;
+}
+
+.id-card-box {
+  background: #fff7ed;
+}
+
+.privacy-warning {
+  font-size: 12px;
+  color: #b45309;
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.cert-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cert-action-btn {
+  margin: 0;
+  border-radius: 10px;
+  height: 44px;
+  line-height: 44px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.cert-manual-btn {
+  background: #ffffff;
+}
+
+.cert-hint {
+  margin-top: 10px;
+  margin-bottom: 6px;
+  font-size: 12px;
+  color: #7c8799;
+  line-height: 1.6;
+}
+
+.cert-fields {
+  margin-top: 8px;
+}
+
+.cert-field-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #f0e2cf;
+  padding: 10px 0;
+}
+
+.cert-field-label {
+  width: 90px;
+  flex-shrink: 0;
+  font-size: 14px;
+  color: #7a4a16;
+  font-weight: 600;
+}
+
+.cert-field-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.cert-field-input:focus {
+  outline: none;
+}
+
+.cert-field-block {
+  padding-top: 10px;
+}
+
+.cert-address-textarea {
+  margin-top: 8px;
+  background: #fff;
 }
 
 .form-select {
@@ -149,6 +260,17 @@
 
 .publish-submit {
   padding: 24px 16px;
+}
+
+.clear-btn {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+  border-radius: 24px;
+  font-size: 15px;
 }
 
 .submit-btn {

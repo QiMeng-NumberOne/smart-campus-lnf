@@ -12,8 +12,8 @@
 ### 1. 创建数据库
 
 ```bash
-mysql -u root -p -e "CREATE DATABASE smart_campus_lnf CHARACTER SET utf8mb4;"
-mysql -u root -p smart_campus_lnf < docs/03_database/schema.sql
+python scripts/init_db.py
+python scripts/seed_data.py
 ```
 
 ### 2. 配置环境
@@ -28,7 +28,7 @@ cp .env.example .env
 
 ```bash
 pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 8080
+python -m uvicorn main:app --reload --host 0.0.0.0 --port 8080
 ```
 
 访问 http://localhost:8080/docs 查看 API 文档。
@@ -40,21 +40,27 @@ backend/
 ├── main.py              # 入口
 ├── requirements.txt
 ├── app/
-│   ├── config.py        # 配置
-│   ├── database.py      # 数据库
-│   ├── models/          # 数据模型
-│   └── routers/         # 路由
-│       ├── auth.py      # 认证
-│       ├── items.py     # 物品 CRUD
-│       ├── search.py    # 搜索
-│       ├── ai.py        # AI 识别
-│       ├── favorites.py # 收藏
-│       └── common.py    # 公共接口
+│   ├── config.py         # 配置
+│   ├── database.py       # 数据库
+│   ├── core/             # 安全、依赖、统一响应
+│   ├── schemas/          # DTO
+│   ├── repositories/     # 数据访问层
+│   ├── services/         # 业务服务层
+│   ├── models/           # ORM 模型
+│   └── api/v1/           # 控制层路由
 └── uploads/             # 上传文件目录
 ```
 
 ## 后续开发
 
-- **YOLO/OCR/CLIP**：在 `app/routers/ai.py` 和 `app/routers/search.py` 中接入模型
-- **JWT 鉴权**：实现 `get_current_user` 依赖并加在需登录的接口
-- **OSS 存储**：修改 `common.upload` 上传至阿里云/腾讯云 OSS
+- **YOLO/OCR/CLIP**：在 `app/services` 新增 `ai_service` 并在发布流程中异步调用
+- **JWT 鉴权**：当前基础版已接入，可按角色扩展权限
+- **OSS 存储**：将 `api/v1/common.py` 上传逻辑替换为 OSS
+
+## YOLO 手动识别接口
+
+- `POST /api/v1/ai/recognize/item/{item_id}`：手动触发识别
+- `POST /api/v1/ai/apply-suggestion`：发布者采用识别建议
+- `GET /api/v1/ai/health`：AI健康检查
+
+云推理可选：见 `inference_service/README.md`。

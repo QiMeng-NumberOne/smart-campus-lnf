@@ -3,35 +3,23 @@
     <view class="profile-user">
       <view class="profile-avatar">
         <image src="{{user.avatar || '/images/avatar.png'}}" mode="aspectFill"></image>
-        <view class="avatar-badge">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-            <polyline points="22 4 12 14.01 9 11.01"></polyline>
-          </svg>
-        </view>
+        <view class="avatar-badge">✓</view>
       </view>
       <view class="profile-info">
         <view class="profile-name">{{user.name || '未登录'}}</view>
         <view class="profile-detail">{{user.school}} · {{user.grade}}</view>
         <view class="profile-tags">
           <view class="tag">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
             在校学生
           </view>
           <view class="tag">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
-              <polyline points="22 4 12 14.01 9 11.01"></polyline>
-            </svg>
             已认证
           </view>
         </view>
       </view>
       <view class="profile-qrcode">
         <view class="qrcode-btn">我的二维码</view>
+        <view class="qrcode-btn" style="margin-top: 8px;" bindtap="goEditProfile">修改资料</view>
       </view>
     </view>
     <view class="profile-stats">
@@ -107,7 +95,7 @@
         <view class="menu-title">AI匹配记录</view>
       </view>
       <view class="menu-right">
-        <span style="font-size: 12px; color: #999;">查看历史匹配</span>
+        <text style="font-size: 12px; color: #999;">查看历史匹配</text>
         <view class="menu-arrow">></view>
       </view>
     </view>

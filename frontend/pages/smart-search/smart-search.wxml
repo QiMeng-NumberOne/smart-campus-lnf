@@ -1,0 +1,35 @@
+<view class="container">
+  <view class="search-box">
+    <view class="mode-row">
+      <view class="mode-btn {{mode === 'text' ? 'active' : ''}}" data-mode="text" bindtap="switchMode">文搜</view>
+      <view class="mode-btn {{mode === 'image' ? 'active' : ''}}" data-mode="image" bindtap="switchMode">图搜</view>
+    </view>
+    <view class="filter-row">
+      <view class="filter-btn {{itemTypeFilter === 'all' ? 'active' : ''}}" data-filter="all" bindtap="switchItemTypeFilter">全部</view>
+      <view class="filter-btn {{itemTypeFilter === 'lost' ? 'active' : ''}}" data-filter="lost" bindtap="switchItemTypeFilter">只看寻物</view>
+      <view class="filter-btn {{itemTypeFilter === 'found' ? 'active' : ''}}" data-filter="found" bindtap="switchItemTypeFilter">只看招领</view>
+    </view>
+    <view wx:if="{{mode === 'text'}}" class="input-row">
+      <input type="text" placeholder="输入描述关键词..." bindinput="onKeywordInput" bindconfirm="handleRun" />
+      <button class="run-btn" bindtap="handleRun">开始</button>
+    </view>
+    <view wx:else class="image-row">
+      <button class="run-btn image" bindtap="handleRun">选择图片并搜索</button>
+    </view>
+  </view>
+
+  <view class="items-grid">
+    <view class="item-card" wx:for="{{results}}" wx:key="id" bindtap="handleItemClick" data-id="{{item.id}}">
+      <view class="item-image">
+        <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" mode="aspectFill" class="item-cover" data-id="{{item.id}}" binderror="onImageError"></image>
+        <view wx:else class="item-cover empty-cover">暂无图片</view>
+        <view class="item-tag">{{item.type === 'lost' ? '寻物' : '招领'}}</view>
+      </view>
+      <view class="item-info">
+        <view class="item-title">{{item.title}}</view>
+        <view class="sim-tag">匹配度 {{item.similarityText}}</view>
+        <view class="item-location">{{item.location}} · {{item.date}}</view>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,26 @@
+.container { padding: 16px; }
+.card { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+.title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+.meta { color: #666; margin-top: 4px; font-size: 13px; }
+.desc { margin-top: 10px; color: #333; }
+.images { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.img { width: 100px; height: 100px; border-radius: 8px; background: #f3f3f3; }
+.actions { display: flex; gap: 10px; }
+.btn { flex: 1; }
+.primary { background: #1a73e8; color: #fff; }
+.comment-box { margin-top: 12px; background: #fff; border-radius: 10px; padding: 12px; }
+.comment-title-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.comment-title { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+.order-btn { color: #1a73e8; font-size: 12px; }
+.reply-tip { font-size: 12px; color: #666; margin-bottom: 6px; }
+.reply-cancel { color: #1a73e8; margin-left: 8px; }
+.comment-input-row { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; }
+.comment-input { flex: 1; border: 1px solid #ddd; border-radius: 8px; padding: 8px; font-size: 14px; }
+.comment-send { background: #1a73e8; color: #fff; border-radius: 6px; }
+.comment-item { border-top: 1px solid #f0f0f0; padding: 8px 0; }
+.comment-user { color: #1a73e8; font-size: 13px; margin-bottom: 3px; }
+.comment-content { color: #333; font-size: 14px; }
+.reply-prefix { color: #1a73e8; }
+.comment-time { color: #999; font-size: 12px; margin-top: 4px; }
+.comment-reply-btn { color: #1a73e8; font-size: 12px; margin-top: 4px; }
+.comment-empty { color: #999; text-align: center; padding: 8px 0; }

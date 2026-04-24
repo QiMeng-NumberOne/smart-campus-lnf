@@ -1,12 +1,24 @@
+const { unreadCount } = require("../../utils/api");
+
 // 消息页面逻辑
 Page({
   data: {
-    // 消息数据
+    unread: 0
   },
 
   // 页面加载
   onLoad(options) {
-    console.log('消息页面加载');
+    this.loadUnread();
+  },
+
+  onShow() {
+    this.loadUnread();
+  },
+
+  loadUnread() {
+    unreadCount()
+      .then((res) => this.setData({ unread: res?.data?.count || 0 }))
+      .catch(() => this.setData({ unread: 0 }));
   },
 
   // 返回

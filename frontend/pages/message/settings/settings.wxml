@@ -11,10 +11,7 @@
         <view class="menu-title">系统通知</view>
       </view>
       <view class="menu-right">
-        <label class="switch">
-          <input type="checkbox" checked="{{settings.systemNotification}}" bindchange="onSettingChange" data-key="systemNotification" />
-          <span class="slider round"></span>
-        </label>
+        <switch checked="{{settings.systemNotification}}" bindchange="onSettingChange" data-key="systemNotification" />
       </view>
     </view>
     <view class="menu-item">
@@ -22,10 +19,7 @@
         <view class="menu-title">匹配通知</view>
       </view>
       <view class="menu-right">
-        <label class="switch">
-          <input type="checkbox" checked="{{settings.matchNotification}}" bindchange="onSettingChange" data-key="matchNotification" />
-          <span class="slider round"></span>
-        </label>
+        <switch checked="{{settings.matchNotification}}" bindchange="onSettingChange" data-key="matchNotification" />
       </view>
     </view>
     <view class="menu-item">
@@ -33,10 +27,7 @@
         <view class="menu-title">回复通知</view>
       </view>
       <view class="menu-right">
-        <label class="switch">
-          <input type="checkbox" checked="{{settings.replyNotification}}" bindchange="onSettingChange" data-key="replyNotification" />
-          <span class="slider round"></span>
-        </label>
+        <switch checked="{{settings.replyNotification}}" bindchange="onSettingChange" data-key="replyNotification" />
       </view>
     </view>
     <view class="menu-item">
@@ -44,10 +35,7 @@
         <view class="menu-title">声音提醒</view>
       </view>
       <view class="menu-right">
-        <label class="switch">
-          <input type="checkbox" checked="{{settings.soundRemind}}" bindchange="onSettingChange" data-key="soundRemind" />
-          <span class="slider round"></span>
-        </label>
+        <switch checked="{{settings.soundRemind}}" bindchange="onSettingChange" data-key="soundRemind" />
       </view>
     </view>
     <view class="menu-item">
@@ -55,10 +43,7 @@
         <view class="menu-title">振动提醒</view>
       </view>
       <view class="menu-right">
-        <label class="switch">
-          <input type="checkbox" checked="{{settings.vibrationRemind}}" bindchange="onSettingChange" data-key="vibrationRemind" />
-          <span class="slider round"></span>
-        </label>
+        <switch checked="{{settings.vibrationRemind}}" bindchange="onSettingChange" data-key="vibrationRemind" />
       </view>
     </view>
   </view>

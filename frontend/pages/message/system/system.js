@@ -1,31 +1,33 @@
+const { listMessages, markMessageRead } = require("../../../utils/api");
+
 Page({
   data: {
-    systemNotifications: [
-      {
-        id: 1,
-        title: '系统维护通知',
-        content: '系统将于今晚23:00-次日凌晨2:00进行维护，期间部分功能可能暂时不可用。',
-        time: '2026-04-13 09:00'
-      },
-      {
-        id: 2,
-        title: '新功能上线',
-        content: '失物招领小程序新增物品智能匹配功能，快来体验吧！',
-        time: '2026-04-10 14:30'
-      },
-      {
-        id: 3,
-        title: '安全提醒',
-        content: '请不要在平台上泄露个人敏感信息，谨防诈骗。',
-        time: '2026-04-05 10:00'
-      }
-    ]
+    systemNotifications: []
   },
   onLoad: function() {
-    console.log('系统通知页面加载');
+    this.loadMessages();
   },
   onShow: function() {
-    console.log('系统通知页面显示');
+    this.loadMessages();
+  },
+  loadMessages() {
+    listMessages({ page: 1, page_size: 50 })
+      .then((res) => {
+        const list = res?.data?.list || [];
+        this.setData({
+          systemNotifications: list.map((i) => ({
+            id: i.id,
+            title: i.is_read ? "系统消息" : "未读消息",
+            content: i.content,
+            time: i.created_at
+          }))
+        });
+      })
+      .catch(() => this.setData({ systemNotifications: [] }));
+  },
+  openMsg(e) {
+    const id = e.currentTarget.dataset.id;
+    markMessageRead(id).finally(() => this.loadMessages());
   },
   goBack: function() {
     wx.navigateBack();

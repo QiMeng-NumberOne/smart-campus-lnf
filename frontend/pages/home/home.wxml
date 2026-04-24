@@ -2,7 +2,7 @@
   <view class="home-header">
     <view>
       <view class="home-header-title">校园失物招领</view>
-      <view class="home-header-subtitle">清华大学校园平台</view>
+      <view class="home-header-subtitle">西南大学校园平台</view>
     </view>
     <view class="home-header-icon">
       🔔
@@ -12,8 +12,9 @@
   <view class="search-bar">
     <view class="search-input">
       🔍
-      <input type="text" placeholder="搜索失物或招领..." bindconfirm="handleSearch" />
-      <button class="filter-btn">筛选</button>
+      <input type="text" placeholder="搜索失物或招领..." bindinput="onSearchInput" bindconfirm="handleSearch" />
+      <button class="img-search-btn" bindtap="goToSmartSearch">文/图搜</button>
+      <button class="filter-btn" bindtap="handleSearch">筛选</button>
     </view>
   </view>
   
@@ -41,11 +42,15 @@
   <view class="items-grid">
     <view class="item-card" wx:for="{{items}}" wx:key="id" bindtap="handleItemClick" data-id="{{item.id}}">
       <view class="item-image">
+        <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" mode="aspectFill" class="item-cover" data-id="{{item.id}}" binderror="onImageError"></image>
+        <view wx:else class="item-cover empty-cover">暂无图片</view>
         <view class="item-tag">{{item.type === 'lost' ? '寻物' : '招领'}}</view>
-        <view wx:if="item.commentCount" class="item-tag" style="right: 8px; left: auto; background-color: #4caf50;">{{item.commentCount}}</view>
+        <view class="item-tag" style="left: auto; right: 8px; background-color: #5c6bc0;">{{item.statusLabel}}</view>
       </view>
       <view class="item-info">
         <view class="item-title">{{item.title}}</view>
+        <view wx:if="{{item.similarity !== undefined}}" class="sim-tag">匹配度 {{item.similarityText}}</view>
+        <view wx:if="{{item.certMatch}}" class="cert-match-tag">证件匹配</view>
         <view class="item-location">{{item.location}} · {{item.date}}</view>
         <view style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px;">
           <view class="item-user">{{item.user}}</view>

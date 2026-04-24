@@ -1,0 +1,9 @@
+<view class="container">
+  <view class="title">{{pageTitle}}</view>
+  <view class="item" wx:for="{{list}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+    <view class="title">{{item.title}}</view>
+    <view class="meta">{{item.item_type === 1 ? '寻物' : '招领'}} · {{item.status_label || ('状态' + item.status)}}</view>
+    <view class="meta">{{item.created_at}}</view>
+  </view>
+  <view wx:if="{{!list.length}}" class="empty">暂无发布记录</view>
+</view>

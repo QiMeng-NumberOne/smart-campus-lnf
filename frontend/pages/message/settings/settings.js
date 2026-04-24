@@ -35,7 +35,7 @@ Page({
   // 设置变更
   onSettingChange(e) {
     const key = e.currentTarget.dataset.key;
-    const value = e.detail.value[0] ? true : false;
+    const value = !!e.detail.value;
     
     const newSettings = {
       ...this.data.settings,

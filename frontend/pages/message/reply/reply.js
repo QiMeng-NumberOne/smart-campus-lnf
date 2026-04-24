@@ -1,25 +1,41 @@
+const { listMessages, markMessageRead } = require("../../../utils/api");
+
 Page({
   data: {
-    replyNotifications: [
-      {
-        id: 1,
-        title: '有人回复了您的寻物启事',
-        content: '用户"小明"回复了您发布的寻物启事："我看到了您的钱包，请问在哪里可以联系您？"',
-        time: '2026-04-13 11:20'
-      },
-      {
-        id: 2,
-        title: '有人回复了您的失物招领',
-        content: '用户"小红"回复了您发布的失物招领："这是我的笔记本，谢谢您！"',
-        time: '2026-04-12 16:30'
-      }
-    ]
+    replyNotifications: []
   },
   onLoad: function() {
-    console.log('回复通知页面加载');
+    this.loadData();
   },
   onShow: function() {
-    console.log('回复通知页面显示');
+    this.loadData();
+  },
+  loadData() {
+    listMessages({ page: 1, page_size: 50 })
+      .then((res) => {
+        const list = res?.data?.list || [];
+        const replies = list
+          .filter((m) => m.kind === "comment")
+          .map((m) => ({
+            id: m.id,
+            itemId: m.item_id,
+            title: "有人评论了你的物品",
+            content: m.reply_to_username ? `回复 ${m.reply_to_username}：${m.content}` : m.content,
+            time: m.created_at
+          }));
+        this.setData({ replyNotifications: replies });
+      })
+      .catch(() => this.setData({ replyNotifications: [] }));
+  },
+  openReply(e) {
+    const id = e.currentTarget.dataset.id;
+    const itemId = e.currentTarget.dataset.itemId;
+    markMessageRead(id).finally(() => {
+      this.loadData();
+      wx.navigateTo({
+        url: `/pages/item-detail/item-detail?id=${itemId}&commentId=${id}`
+      });
+    });
   },
   goBack: function() {
     wx.navigateBack();
