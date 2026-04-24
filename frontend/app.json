@@ -8,7 +8,11 @@
     "pages/message/match/match",
     "pages/message/reply/reply",
     "pages/message/settings/settings",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/profile-edit/profile-edit",
+    "pages/item-detail/item-detail",
+    "pages/my-items/my-items",
+    "pages/smart-search/smart-search"
   ],
   "window": {
     "backgroundTextStyle": "light",

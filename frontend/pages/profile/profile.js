@@ -1,3 +1,5 @@
+const { me, myItems, listFavorites, unreadCount } = require("../../utils/api");
+
 // 个人中心页面逻辑
 Page({
   data: {
@@ -27,6 +29,9 @@ Page({
   // 页面加载
   onLoad(options) {
     console.log('个人中心页面加载');
+  },
+
+  onShow() {
     this.loadUserProfile();
   },
 
@@ -35,44 +40,50 @@ Page({
     wx.showLoading({
       title: '加载中...'
     });
+    Promise.all([me(), myItems(), listFavorites(), unreadCount()])
+      .then(([u, mine, favs, unread]) => {
+        const mineList = mine?.data?.list || [];
+        const lostCount = mineList.filter((i) => i.item_type === 1).length;
+        const claimCount = mineList.filter((i) => i.item_type === 2).length;
+        this.setData({
+          "user.name": u?.data?.username || "未登录",
+          "user.avatar": u?.data?.avatar || "",
+          "user.school": u?.data?.college || "未填写学院",
+          "user.grade": u?.data?.grade || "未填写年级",
+          "user.stats.lostCount": lostCount,
+          "user.stats.claimCount": claimCount,
+          "user.stats.likes": favs?.data?.total || 0,
+          "user.stats.foundCount": unread?.data?.count || 0
+        });
+      })
+      .catch(() => {
+        wx.showToast({ title: "用户信息加载失败", icon: "none" });
+      })
+      .finally(() => wx.hideLoading());
+  },
 
-    // 模拟API请求
-    setTimeout(() => {
-      wx.hideLoading();
-      // 这里可以从API获取用户信息
-    }, 500);
+  goEditProfile() {
+    wx.navigateTo({ url: "/pages/profile-edit/profile-edit" });
   },
 
   // 跳转到我的寻物
   goToMyLost() {
-    wx.showToast({
-      title: '查看我的寻物',
-      icon: 'none'
-    });
+    wx.navigateTo({ url: "/pages/my-items/my-items?itemType=1" });
   },
 
   // 跳转到我的招领
   goToMyClaim() {
-    wx.showToast({
-      title: '查看我的招领',
-      icon: 'none'
-    });
+    wx.navigateTo({ url: "/pages/my-items/my-items?itemType=2" });
   },
 
   // 跳转到已找回记录
   goToFoundRecords() {
-    wx.showToast({
-      title: '查看已找回记录',
-      icon: 'none'
-    });
+    wx.navigateTo({ url: "/pages/message/system/system" });
   },
 
   // 跳转到AI匹配记录
   goToAiMatch() {
-    wx.showToast({
-      title: '查看AI匹配记录',
-      icon: 'none'
-    });
+    wx.navigateTo({ url: "/pages/message/match/match" });
   },
 
   // 跳转到消息通知

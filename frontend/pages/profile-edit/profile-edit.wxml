@@ -1,0 +1,41 @@
+<view class="container">
+  <view class="card">
+    <view class="row">
+      <view class="label">头像</view>
+      <view class="value">
+        <image wx:if="{{form.avatar}}" src="{{form.avatar}}" class="avatar" mode="aspectFill"></image>
+        <view wx:else class="avatar empty">未设置</view>
+        <button size="mini" bindtap="chooseAvatar">更换</button>
+      </view>
+    </view>
+    <view class="row">
+      <view class="label">昵称</view>
+      <input class="input" value="{{form.username}}" data-key="username" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <view class="label">手机号</view>
+      <input class="input" value="{{form.phone}}" data-key="phone" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <view class="label">学号</view>
+      <input class="input" value="{{form.student_id}}" data-key="student_id" bindinput="onInput" />
+    </view>
+    <view class="row">
+      <view class="label">年级</view>
+      <picker mode="selector" range="{{gradeOptions}}" value="{{gradeIndex}}" bindchange="onGradeChange">
+        <view class="picker-value">{{form.grade}}</view>
+      </picker>
+    </view>
+    <view class="row">
+      <view class="label">学院</view>
+      <picker mode="selector" range="{{collegeOptions}}" value="{{collegeIndex}}" bindchange="onCollegeChange">
+        <view class="picker-value">{{form.college}}</view>
+      </picker>
+    </view>
+    <view class="row">
+      <view class="label">专业</view>
+      <input class="input" value="{{form.major}}" data-key="major" bindinput="onInput" placeholder="请输入专业" />
+    </view>
+  </view>
+  <button class="save-btn" bindtap="submit">保存资料</button>
+</view>

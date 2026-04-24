@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
 from app.database import get_db
 from app.models.item import Item, ItemImage
@@ -24,6 +25,17 @@ class ItemCreate(BaseModel):
     lost_found_time: Optional[str] = None
     contact_info: Optional[str] = None
     images: list[dict]
+
+
+def _parse_datetime(value: Optional[str]) -> Optional[datetime]:
+    if not value:
+        return None
+    for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d %H:%M"):
+        try:
+            return datetime.strptime(value, fmt)
+        except ValueError:
+            continue
+    return None
 
 @router.get("")
 def list_items(
@@ -90,6 +102,7 @@ def create_item(body: ItemCreate, db: Session = Depends(get_db)):
         description=body.description,
         location_id=body.location_id,
         location_detail=body.location_detail,
+        lost_found_time=_parse_datetime(body.lost_found_time),
         contact_info=body.contact_info,
         images=[]
     )

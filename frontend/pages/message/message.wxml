@@ -12,7 +12,7 @@
         <view class="menu-title">系统通知</view>
       </view>
       <view class="menu-right">
-        <span style="font-size: 12px; color: #999;">2条新消息</span>
+        <text style="font-size: 12px; color: #999;">{{unread}}条新消息</text>
         <view class="menu-arrow">></view>
       </view>
     </view>
@@ -22,7 +22,7 @@
         <view class="menu-title">匹配通知</view>
       </view>
       <view class="menu-right">
-        <span style="font-size: 12px; color: #999;">1条新消息</span>
+        <text style="font-size: 12px; color: #999;">{{unread}}条新消息</text>
         <view class="menu-arrow">></view>
       </view>
     </view>
@@ -32,7 +32,7 @@
         <view class="menu-title">回复通知</view>
       </view>
       <view class="menu-right">
-        <span style="font-size: 12px; color: #999;">0条新消息</span>
+        <text style="font-size: 12px; color: #999;">{{unread}}条新消息</text>
         <view class="menu-arrow">></view>
       </view>
     </view>

@@ -1,5 +1,5 @@
 train: D:/MyProject/smart-campus-lnf/yolo_model/datasets/images/train
 val: D:/MyProject/smart-campus-lnf/yolo_model/datasets/images/val
 
-nc: 3
-names: ['keys','id_card','glasses']
+nc: 10
+names: ['keys','id_card','glasses','phone','headphone','flashdrive','umbrella','waterbottle','bag','book']

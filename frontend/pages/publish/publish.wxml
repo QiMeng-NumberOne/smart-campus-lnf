@@ -1,8 +1,8 @@
 <view class="container">
   <view class="publish-header">
     <view bindtap="goBack">返回</view>
-    <view class="publish-header-title">发布寻物启事</view>
-    <view class="publish-header-btn" bindtap="togglePublishType" data-type="lost">失物</view>
+    <view class="publish-header-title">{{pageTitle}}</view>
+    <view class="publish-header-btn" bindtap="togglePublishType">{{switchText}}</view>
   </view>
   
   <view class="publish-form">
@@ -10,13 +10,20 @@
       <view class="form-label">上传照片</view>
       <view class="form-hint">最多6张</view>
       <view class="upload-area">
+        <block wx:for="{{images}}" wx:key="*this">
+          <view class="upload-item">
+            <image src="{{item}}" mode="aspectFill" style="width:100%;height:100%;" bindtap="previewImage" data-index="{{index}}"></image>
+            <view class="remove-btn" catchtap="removeImage" data-index="{{index}}">删</view>
+          </view>
+        </block>
         <view class="upload-item" bindtap="chooseImage">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-            <line x1="8" y1="12" x2="16" y2="12"></line>
-            <line x1="12" y1="8" x2="12" y2="16"></line>
-          </svg>
-          <view>添加照片</view>
+          <view>+ 添加照片</view>
+        </view>
+      </view>
+      <view class="ai-suggest-row">
+        <button class="ai-btn" bindtap="detectCategoryByAi" loading="{{aiDetecting}}">AI识别首张图片并推荐分类</button>
+        <view wx:if="{{aiSuggestion}}" class="ai-tip">
+          建议：{{aiSuggestion.item_type_name || aiSuggestion.item_class || '未知'}}（置信度 {{aiSuggestion.confidence}}，自动填充阈值 {{aiAutoFillThreshold}}）
         </view>
       </view>
     </view>
@@ -24,8 +31,44 @@
     <view class="form-section">
       <view class="form-label">物品分类</view>
       <view class="form-select" bindtap="chooseCategory">
-        选择物品类型
+        {{formData.category || '选择物品类型'}}
         <view class="form-arrow">></view>
+      </view>
+    </view>
+
+    <view class="form-section id-card-box" wx:if="{{formData.itemTypeId === 9 || formData.category === '证件'}}">
+      <view class="form-label">证件信息补充（仅姓名可公开）</view>
+      <view class="privacy-warning">强提醒：请遮挡证号、地址和照片敏感信息，姓名可不遮挡。</view>
+      <view class="cert-actions">
+        <button class="ai-btn cert-action-btn" bindtap="autoFillIdCardByOcr" loading="{{idCardOcrLoading}}">证件OCR自动提取</button>
+        <button class="ai-btn cert-action-btn cert-manual-btn" bindtap="showManualCertFields" wx:if="{{!certInfoVisible}}">手动补录字段</button>
+      </view>
+      <view class="cert-hint">先点击 OCR 自动提取，再核对信息；识别有误请手动修改。</view>
+      <view class="cert-fields" wx:if="{{certInfoVisible}}">
+        <view wx:if="{{certFieldVisible.name}}" class="cert-field-row">
+          <view class="cert-field-label">姓名：</view>
+          <input type="text" class="cert-field-input" placeholder="请输入姓名" value="{{formData.idCardName}}" bindinput="onIdCardNameChange" />
+        </view>
+        <view wx:if="{{certFieldVisible.idNo}}" class="cert-field-row">
+          <view class="cert-field-label">证件号：</view>
+          <input type="text" class="cert-field-input" placeholder="请输入证件号" value="{{formData.idCardNo}}" bindinput="onIdCardNoChange" />
+        </view>
+        <view wx:if="{{certFieldVisible.studentNo}}" class="cert-field-row">
+          <view class="cert-field-label">学号：</view>
+          <input type="text" class="cert-field-input" placeholder="请输入学号" value="{{formData.studentNo}}" bindinput="onStudentNoChange" />
+        </view>
+        <view wx:if="{{certFieldVisible.college}}" class="cert-field-row">
+          <view class="cert-field-label">学院：</view>
+          <input type="text" class="cert-field-input" placeholder="请输入学院" value="{{formData.college}}" bindinput="onCollegeChange" />
+        </view>
+        <view wx:if="{{certFieldVisible.major}}" class="cert-field-row">
+          <view class="cert-field-label">专业：</view>
+          <input type="text" class="cert-field-input" placeholder="请输入专业" value="{{formData.major}}" bindinput="onMajorChange" />
+        </view>
+        <view wx:if="{{certFieldVisible.address}}" class="cert-field-block">
+          <view class="cert-field-label">地址：</view>
+          <textarea class="form-textarea cert-address-textarea" placeholder="请输入地址（仅加密存储）" value="{{formData.idCardAddress}}" bindinput="onIdCardAddressChange" maxlength="200"></textarea>
+        </view>
       </view>
     </view>
     
@@ -42,23 +85,19 @@
     
     <view class="form-section">
       <view class="form-label">丢失时间</view>
-      <view class="form-select" bindtap="chooseTime">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="10"></circle>
-          <polyline points="12 6 12 12 16 14"></polyline>
-        </svg>
-        {{formData.lostTime}}
-        <view class="form-arrow">></view>
+      <view class="form-select">
+        <picker mode="date" value="{{formData.lostDate}}" bindchange="onDateChange">
+          <view>{{formData.lostDate}}</view>
+        </picker>
+        <picker mode="time" value="{{formData.lostTime}}" bindchange="onTimeChange">
+          <view>{{formData.lostTime}}</view>
+        </picker>
       </view>
     </view>
     
     <view class="form-section">
       <view class="form-label">丢失地点</view>
       <view class="form-select" bindtap="chooseLocation">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-          <circle cx="12" cy="10" r="3"></circle>
-        </svg>
         {{formData.location || '选择地点'}}
         <view class="form-arrow">></view>
       </view>
@@ -68,15 +107,9 @@
       <view class="form-label">联系方式</view>
       <view class="contact-options">
         <view class="contact-option {{selectedContactMethod === 'phone' ? 'active' : ''}}" bindtap="selectContactMethod" data-method="phone">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-          </svg>
           手机号
         </view>
         <view class="contact-option {{selectedContactMethod === 'wechat' ? 'active' : ''}}" bindtap="selectContactMethod" data-method="wechat">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="#1a73e8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-          </svg>
           微信号
         </view>
       </view>
@@ -85,6 +118,7 @@
   </view>
   
   <view class="publish-submit">
-    <button class="submit-btn" bindtap="submitPublish">发布寻物启事</button>
+    <button class="clear-btn" bindtap="clearForm">清空内容</button>
+    <button class="submit-btn" bindtap="submitPublish">{{submitText}}</button>
   </view>
 </view>

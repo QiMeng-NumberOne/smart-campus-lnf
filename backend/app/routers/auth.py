@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from datetime import datetime, timedelta
 from jose import jwt
 from passlib.context import CryptContext
+import bcrypt
 
 from app.database import get_db
 from app.models.user import User
@@ -14,6 +15,16 @@ from app.config import settings
 
 router = APIRouter()
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def _safe_verify(password: str, password_hash: str) -> bool:
+    try:
+        return pwd_context.verify(password, password_hash)
+    except Exception:
+        try:
+            return bcrypt.checkpw(password.encode("utf-8"), password_hash.encode("utf-8"))
+        except Exception:
+            return False
 
 class LoginRequest(BaseModel):
     account: str
@@ -38,7 +49,7 @@ def login(req: LoginRequest, db: Session = Depends(get_db)):
     user = db.query(User).filter(
         (User.phone == req.account) | (User.student_id == req.account)
     ).first()
-    if not user or not pwd_context.verify(req.password, user.password_hash):
+    if not user or not _safe_verify(req.password, user.password_hash):
         raise HTTPException(status_code=400, detail="账号或密码错误")
     if user.status != 1:
         raise HTTPException(status_code=400, detail="账号已禁用")

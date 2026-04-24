@@ -1,0 +1,53 @@
+<view class="container" wx:if="{{item}}">
+  <view class="card">
+    <view class="title">{{item.title}}</view>
+    <view class="meta">类型：{{item.item_type === 1 ? '寻物' : '招领'}}</view>
+    <view class="meta">状态：{{item.status_label || item.status}}</view>
+    <view class="meta">地点：{{item.location_detail || '未填写'}}</view>
+    <view class="meta">时间：{{item.lost_found_time || '未填写'}}</view>
+    <view class="meta" wx:if="{{item.expires_at}}">到期：{{item.expires_at}}</view>
+    <view class="desc">{{item.description || '暂无描述'}}</view>
+  </view>
+
+  <view class="images">
+    <image wx:for="{{item.images}}" wx:key="id" src="{{item.url}}" mode="aspectFill" class="img" bindtap="previewItemImage" data-index="{{index}}"></image>
+  </view>
+
+  <view class="actions">
+    <button class="btn" bindtap="toggleFavorite">{{isFavorite ? '取消收藏' : '收藏'}}</button>
+    <button class="btn primary" bindtap="callContact">联系发布者</button>
+  </view>
+
+  <view class="actions" wx:if="{{isOwner}}">
+    <button class="btn" wx:for="{{statusActions}}" wx:for-item="action" wx:key="status" bindtap="changeItemStatus" data-status="{{action.status}}">{{action.text}}</button>
+  </view>
+
+  <view class="comment-box">
+    <view class="comment-title-row">
+      <view class="comment-title">评论</view>
+      <view class="order-btn" bindtap="toggleCommentOrder">
+        {{commentOrder === 'desc' ? '按时间倒序' : '按时间正序'}}
+      </view>
+    </view>
+    <view wx:if="{{replyToCommentId}}" class="reply-tip">
+      正在回复：{{replyToUsername}}
+      <text class="reply-cancel" bindtap="clearReplyTarget">取消</text>
+    </view>
+    <view class="comment-input-row">
+      <input class="comment-input" placeholder="说点什么..." value="{{commentInput}}" bindinput="onCommentInput" maxlength="200" />
+      <button size="mini" class="comment-send" bindtap="submitComment">发送</button>
+    </view>
+    <view class="comment-list">
+      <view class="comment-item" wx:for="{{comments}}" wx:key="id" id="comment-{{item.id}}">
+        <view class="comment-user">{{item.from_username}}</view>
+        <view class="comment-content">
+          <text wx:if="{{item.reply_to_username}}" class="reply-prefix">回复 {{item.reply_to_username}}：</text>
+          {{item.content}}
+        </view>
+        <view class="comment-time">{{item.created_at}}</view>
+        <view class="comment-reply-btn" bindtap="startReply" data-comment-id="{{item.id}}" data-username="{{item.from_username}}">回复</view>
+      </view>
+      <view wx:if="{{!comments.length}}" class="comment-empty">暂无评论</view>
+    </view>
+  </view>
+</view>

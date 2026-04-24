@@ -25,13 +25,48 @@ DATA_SOURCES = [
     },
     {
         'source_dir': BASE_DIR / 'origindata' / 'id_card.yolov11' / 'train',
-        'new_class_id': 1,        # 校园卡统统改成 1 号
-        'prefix': 'idcard_'       # 文件名加前缀 idcard_
+        'new_class_id': 1,       
+        'prefix': 'idcard_'     
     },
     {
         'source_dir': BASE_DIR / 'origindata' / 'glasses.yolov11' / 'train',
-        'new_class_id': 2,        # 顺延变成 2 号
-        'prefix': 'glasses_'      # 文件名加前缀 glasses_
+        'new_class_id': 2,        
+        'prefix': 'glasses_'     
+    },
+    {
+        'source_dir': BASE_DIR / 'origindata' / 'phone.yolov11' / 'train',
+        'new_class_id': 3,     
+        'prefix': 'phone_'     
+    },
+    {
+        'source_dir': BASE_DIR / 'origindata' / 'headphone.yolov11' / 'train',
+        'new_class_id': 4,      
+        'prefix': 'headphone_'    
+    },
+    {
+        'source_dir': BASE_DIR / 'origindata' / 'flashdrive.yolov11' / 'train',
+        'new_class_id': 5,       
+        'prefix': 'flashdrive_'      
+    },
+    {
+        'source_dir': BASE_DIR / 'origindata' / 'umbrella.yolov11' / 'train',
+        'new_class_id': 6,      
+        'prefix': 'umbrella_'     
+    },
+    {
+        'source_dir': BASE_DIR / 'origindata' / 'waterbottle.yolov11' / 'train',
+        'new_class_id': 7,       
+        'prefix': 'waterbottle_'     
+    },
+    {
+        'source_dir': BASE_DIR / 'origindata' / 'bag.yolov11' / 'train',
+        'new_class_id': 8,       
+        'prefix': 'bag_'      
+    },
+    {
+        'source_dir': BASE_DIR / 'origindata' / 'book.yolov11' / 'train',
+        'new_class_id': 9,       
+        'prefix': 'book_'     
     }
 ]
 # ==========================================
