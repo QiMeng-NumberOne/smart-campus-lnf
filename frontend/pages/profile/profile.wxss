@@ -204,3 +204,16 @@
   color: #999;
   font-size: 14px;
 }
+
+.logout-wrap {
+  padding: 16px;
+}
+
+.logout-btn {
+  width: 100%;
+  background-color: #fff;
+  color: #ef4444;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  font-size: 15px;
+}

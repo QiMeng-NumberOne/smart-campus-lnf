@@ -1,6 +1,8 @@
 <view class="container">
-  <view class="login-logo"><view class="logo-icon">LF</view></view>
-  <view class="login-title">校园失物招领</view>
+  <view class="login-logo">
+    <image class="logo-img" src="/images/login.jpg" mode="aspectFit" />
+  </view>
+  <view class="login-title">西南大学校园失物招领</view>
   <view class="login-subtitle">智能匹配·快速找回·物归原主</view>
   
   <view class="login-features">
@@ -12,16 +14,16 @@
   
   <view class="login-stats">
     <view class="stat-item">
-      <view class="stat-number">2,847</view>
+      <view class="stat-number">{{stats.resolvedCount}}</view>
       <view class="stat-label">成功找回</view>
     </view>
     <view class="stat-item">
-      <view class="stat-number">15,320</view>
+      <view class="stat-number">{{stats.userCount}}</view>
       <view class="stat-label">注册用户</view>
     </view>
     <view class="stat-item">
-      <view class="stat-number">96%</view>
-      <view class="stat-label">匹配准确率</view>
+      <view class="stat-number">{{stats.resolvedRate}}</view>
+      <view class="stat-label">找回认领率</view>
     </view>
   </view>
   
@@ -33,7 +35,6 @@
   <button class="login-btn wechat-login" bindtap="handleWechatLogin">
     微信一键登录
   </button>
-  <button class="login-btn guest-login" bindtap="goToGuestMode">游客模式浏览</button>
   
   <view class="login-footer">仅限在校师生使用 · 本校官方失物招领平台</view>
 </view>

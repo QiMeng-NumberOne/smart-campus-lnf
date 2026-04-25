@@ -1,4 +1,4 @@
-const { uploadFile, createItem, recognizeImageUrl, ocrIdCard } = require("../../utils/api");
+const { uploadFile, createItem, triggerItemMatchNotify, recognizeImageUrl, ocrIdCard } = require("../../utils/api");
 
 // 发布页面逻辑
 Page({
@@ -432,15 +432,18 @@ Page({
 
   // 选择地点
   chooseLocation() {
-    const locations = ['图书馆', '教学楼', '宿舍楼', '食堂', '操场', '其他'];
-    wx.showActionSheet({
-      itemList: locations,
+    const title = this.data.publishType === "lost" ? "选择丢失地点" : "选择拾到地点";
+    wx.navigateTo({
+      url: "/pages/location-picker/location-picker",
       success: (res) => {
-        const location = locations[res.tapIndex];
-        this.setData({
-          'formData.location': location
+        res.eventChannel.emit("initData", {
+          selected: this.data.formData.location || "",
+          pageTitle: title,
         });
-      }
+        res.eventChannel.on("locationSelected", ({ location }) => {
+          this.setData({ "formData.location": location || "" });
+        });
+      },
     });
   },
 
@@ -581,15 +584,24 @@ Page({
         };
         return createItem(payload);
       })
-      .then(() => {
+      .then((res) => {
         wx.hideLoading();
-        this.resetFormState();
+        const createdItemId = Number(res?.data?.id || 0);
+        const initialCount = Number(res?.data?.match_notify_count || 0);
+        const fallback = createdItemId
+          ? triggerItemMatchNotify(createdItemId).then((r) => Number(r?.data?.match_notify_count || 0)).catch(() => 0)
+          : Promise.resolve(0);
+        return fallback.then((fallbackCount) => {
+          this.resetFormState();
+          const notifyCount = Math.max(initialCount, fallbackCount);
+        const baseTitle = this.data.publishType === "lost" ? "寻物发布成功" : "招领发布成功";
         wx.showToast({
-          title: this.data.publishType === "lost" ? "寻物发布成功" : "招领发布成功",
+          title: notifyCount > 0 ? `${baseTitle}，已匹配${notifyCount}条` : baseTitle,
           icon: 'success'
         });
         wx.switchTab({
           url: '/pages/home/home'
+        });
         });
       })
       .catch((err) => {

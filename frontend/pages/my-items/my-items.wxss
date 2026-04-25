@@ -1,6 +1,98 @@
-.container { padding: 16px; }
-.title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
-.item { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
-.title { font-size: 16px; font-weight: 600; margin-bottom: 6px; }
-.meta { font-size: 12px; color: #888; margin-top: 3px; }
-.empty { color: #999; text-align: center; margin-top: 30px; }
+.container {
+  min-height: 100vh;
+  padding: 16px;
+  background: #f5f6fa;
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #1f2937;
+}
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.item-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.card-cover-wrap {
+  width: 100%;
+  height: 180px;
+  position: relative;
+  background: #eef1f5;
+}
+
+.card-cover {
+  width: 100%;
+  height: 100%;
+}
+
+.card-cover-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+.type-tag {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  background: #ef4444;
+  color: #fff;
+  padding: 3px 8px;
+  font-size: 11px;
+  border-radius: 10px;
+}
+
+.status-tag {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  background: rgba(17, 24, 39, 0.72);
+  color: #fff;
+  padding: 3px 8px;
+  font-size: 11px;
+  border-radius: 10px;
+}
+
+.card-content {
+  padding: 12px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.4;
+}
+
+.card-desc {
+  margin-top: 6px;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.card-meta {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.empty {
+  color: #999;
+  text-align: center;
+  margin-top: 48px;
+}

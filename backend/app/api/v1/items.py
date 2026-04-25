@@ -1,8 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 import json
 
-from app.core.deps import get_current_user
+from app.core.deps import get_current_user, get_optional_user
 from app.core.response import ok
 from app.database import get_db
 from app.models.user import User
@@ -11,6 +11,8 @@ from app.repositories.message_repository import MessageRepository
 from app.schemas.comment import CommentCreate
 from app.schemas.item import ItemCreate, ItemStatusUpdate
 from app.services.item_service import ItemService
+from app.services.match_notify_service import MatchNotifyService
+from app.services.recommend_service import RecommendService
 
 router = APIRouter()
 
@@ -58,19 +60,38 @@ def mine(
     page: int = 1,
     page_size: int = 10,
     item_type: int | None = None,
+    status: int | None = None,
     user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
     service = ItemService(ItemRepository(db))
-    return ok(service.my_items(user.id, page, page_size, item_type=item_type))
+    return ok(service.my_items(user.id, page, page_size, item_type=item_type, status=status))
+
+
+@router.get("/{item_id}/recommendations")
+def item_recommendations(
+    item_id: int,
+    limit: int = Query(10, ge=1, le=50),
+    db: Session = Depends(get_db),
+):
+    """相关推荐（与 /api/v1/recommend/related 等价，挂在物品路由下便于部署与缓存）。"""
+    return ok(RecommendService(db).related_items(item_id, limit=limit))
 
 
 @router.get("/{item_id}")
-def detail(item_id: int, db: Session = Depends(get_db)):
+def detail(
+    item_id: int,
+    db: Session = Depends(get_db),
+    viewer: User | None = Depends(get_optional_user),
+):
     service = ItemService(ItemRepository(db))
     data = service.get_item_detail(item_id)
     if not data:
         raise HTTPException(status_code=404, detail="物品不存在")
+    try:
+        RecommendService(db).log_behavior(viewer.id if viewer else None, item_id, "view")
+    except Exception:
+        pass
     return ok(data)
 
 
@@ -96,6 +117,21 @@ def update_status(
     if err:
         raise HTTPException(status_code=400, detail=err)
     return ok(data)
+
+
+@router.post("/{item_id}/match-notify")
+def trigger_match_notify(
+    item_id: int,
+    user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    item = ItemRepository(db).get_item(item_id)
+    if not item:
+        raise HTTPException(status_code=404, detail="物品不存在")
+    if item.user_id != user.id:
+        raise HTTPException(status_code=403, detail="仅发布者可触发匹配")
+    count = MatchNotifyService(db).notify_for_new_item(item_id)
+    return ok({"match_notify_count": count})
 
 
 @router.get("/{item_id}/comments")
@@ -144,4 +180,8 @@ def create_comment(
         item_id=item_id,
         content=content,
     )
+    try:
+        RecommendService(db).log_behavior(user.id, item_id, "comment")
+    except Exception:
+        pass
     return ok({"id": msg.id})

@@ -2,10 +2,15 @@ import os
 import uuid
 
 import aiofiles
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, Depends, UploadFile, File
+from sqlalchemy import func
+from sqlalchemy.orm import Session
 
 from app.config import settings
 from app.core.response import ok
+from app.database import get_db
+from app.models.item import Item
+from app.models.user import User
 
 router = APIRouter()
 
@@ -26,6 +31,29 @@ ITEM_TYPES = [
 @router.get("/item-types")
 def item_types():
     return ok(ITEM_TYPES)
+
+
+@router.get("/login-stats")
+def login_stats(db: Session = Depends(get_db)):
+    user_count = db.query(func.count(User.id)).filter(User.status == 1).scalar() or 0
+    total_items = db.query(func.count(Item.id)).filter(Item.is_deleted == 0).scalar() or 0
+    resolved_items = (
+        db.query(func.count(Item.id))
+        .filter(
+            Item.is_deleted == 0,
+            Item.status == 2,  # 2: 寻物已找回 / 招领已认领
+        )
+        .scalar()
+        or 0
+    )
+    resolved_rate = round((resolved_items * 100.0 / total_items), 1) if total_items else 0.0
+    return ok(
+        {
+            "resolved_count": int(resolved_items),
+            "user_count": int(user_count),
+            "resolved_rate": resolved_rate,
+        }
+    )
 
 
 @router.post("/upload")

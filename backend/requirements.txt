@@ -19,3 +19,4 @@ cn_clip
 modelscope
 transformers
 sentencepiece
+apscheduler

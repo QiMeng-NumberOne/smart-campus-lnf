@@ -1,9 +1,20 @@
 <view class="container">
-  <view class="title">{{pageTitle}}</view>
-  <view class="item" wx:for="{{list}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
-    <view class="title">{{item.title}}</view>
-    <view class="meta">{{item.item_type === 1 ? '寻物' : '招领'}} · {{item.status_label || ('状态' + item.status)}}</view>
-    <view class="meta">{{item.created_at}}</view>
+  <view class="page-title">{{pageTitle}}</view>
+  <view class="card-list">
+    <view class="item-card" wx:for="{{list}}" wx:key="id" bindtap="goDetail" data-id="{{item.id}}">
+      <view class="card-cover-wrap">
+        <image wx:if="{{item.coverImage}}" src="{{item.coverImage}}" mode="aspectFill" class="card-cover" binderror="onImageError" data-id="{{item.id}}"></image>
+        <view wx:else class="card-cover card-cover-empty">暂无图片</view>
+        <view class="type-tag">{{item.typeText}}</view>
+        <view class="status-tag">{{item.status_label || ('状态' + item.status)}}</view>
+      </view>
+      <view class="card-content">
+        <view class="card-title">{{item.title}}</view>
+        <view class="card-desc">{{item.description || '暂无描述'}}</view>
+        <view class="card-meta">{{item.locationText}}</view>
+        <view class="card-meta">{{item.timeText}}</view>
+      </view>
+    </view>
   </view>
   <view wx:if="{{!list.length}}" class="empty">暂无发布记录</view>
 </view>

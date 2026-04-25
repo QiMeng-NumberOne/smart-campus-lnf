@@ -12,6 +12,10 @@ class Settings(BaseSettings):
     jwt_secret: str = "your-secret-key-change-in-production"
     jwt_algorithm: str = "HS256"
     jwt_expire_hours: int = 24
+    # 微信小程序登录
+    wechat_appid: str = ""
+    wechat_secret: str = ""
+    wechat_subscribe_match_template_id: str = ""
     # 上传
     upload_dir: str = "./uploads"
     # AI
@@ -27,6 +31,14 @@ class Settings(BaseSettings):
     clip_model_root: str = ""
     # 隐私加密
     sensitive_encrypt_key: str = ""
+    # 定时任务
+    scheduler_enabled: bool = True
+    scheduler_timezone: str = "Asia/Shanghai"
+    scheduler_weekly_day_of_week: str = "mon"
+    scheduler_weekly_hour: int = 9
+    scheduler_weekly_minute: int = 0
+    scheduler_daily_match_hour: int = 9
+    scheduler_daily_match_minute: int = 30
     
     class Config:
         env_file = ".env"

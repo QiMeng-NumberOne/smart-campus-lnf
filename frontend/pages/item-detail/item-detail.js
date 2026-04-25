@@ -1,4 +1,13 @@
-const { getItemDetail, addFavorite, removeFavorite, listComments, createComment, updateItemStatus } = require("../../utils/api");
+const {
+  getItemDetail,
+  addFavorite,
+  removeFavorite,
+  listComments,
+  createComment,
+  updateItemStatus,
+  listRelatedItems,
+  recordRecommendEvent
+} = require("../../utils/api");
 
 Page({
   data: {
@@ -12,7 +21,9 @@ Page({
     replyToCommentId: null,
     replyToUsername: "",
     isOwner: false,
-    statusActions: []
+    statusActions: [],
+    relatedItems: [],
+    relatedNote: ""
   },
 
   onLoad(options) {
@@ -37,6 +48,7 @@ Page({
           statusActions
         });
         this.loadComments();
+        this.loadRelated();
       })
       .catch(() => {
         wx.showToast({ title: "详情加载失败", icon: "none" });
@@ -102,11 +114,35 @@ Page({
       .catch(() => wx.showToast({ title: "操作失败", icon: "none" }));
   },
 
+  loadRelated() {
+    const id = this.data.itemId;
+    if (!id) return;
+    listRelatedItems(id, { limit: 8 })
+      .then((res) => {
+        const data = res?.data || {};
+        this.setData({
+          relatedItems: data.list || [],
+          relatedNote: data.note || ""
+        });
+      })
+      .catch(() => this.setData({ relatedItems: [], relatedNote: "" }));
+  },
+
+  openRelated(e) {
+    const id = e.currentTarget.dataset.id;
+    if (!id) return;
+    wx.navigateTo({ url: `/pages/item-detail/item-detail?id=${id}` });
+  },
+
   callContact() {
     const contact = this.data.item?.contact_info;
     if (!contact) {
       wx.showToast({ title: "暂无联系方式", icon: "none" });
       return;
+    }
+    const itemId = this.data.itemId;
+    if (itemId) {
+      recordRecommendEvent({ item_id: Number(itemId), behavior_type: "click_contact" }).catch(() => {});
     }
     wx.setClipboardData({
       data: contact,

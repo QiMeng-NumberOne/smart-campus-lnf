@@ -1,0 +1,28 @@
+<view class="container">
+  <view class="search-box">
+    <input class="search-input" placeholder="搜索地点（如 竹园、图书馆）" bindinput="onKeywordInput" value="{{keyword}}" />
+  </view>
+
+  <scroll-view class="content" scroll-y="true">
+    <view class="quick-section">
+      <view class="section-title">常用地点</view>
+      <view class="chips">
+        <view class="chip" wx:for="{{['中心图书馆','第一教学楼','第二教学楼','竹园一食堂','楠园一食堂','第一运动场','中心图书馆','喷泉广场']}}" wx:key="*this" data-index="{{index}}" bindtap="quickPick">{{item}}</view>
+      </view>
+    </view>
+
+    <view class="group" wx:for="{{filteredGroups}}" wx:key="name">
+      <view class="section-title">{{item.name}}</view>
+      <view class="chips">
+        <view
+          class="chip {{selected === opt ? 'chip-active' : ''}}"
+          wx:for="{{item.options}}"
+          wx:for-item="opt"
+          wx:key="*this"
+          data-location="{{opt}}"
+          bindtap="selectLocation"
+        >{{opt}}</view>
+      </view>
+    </view>
+  </scroll-view>
+</view>

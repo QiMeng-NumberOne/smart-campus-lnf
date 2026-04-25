@@ -4,24 +4,31 @@ Page({
   data: {
     systemNotifications: []
   },
-  onLoad: function() {
-    this.loadMessages();
+  onLoad: function () {
+    this.loadMessages(true);
   },
-  onShow: function() {
-    this.loadMessages();
+  onShow: function () {
+    this.loadMessages(true);
   },
-  loadMessages() {
+  loadMessages(markRead = false) {
     listMessages({ page: 1, page_size: 50 })
       .then((res) => {
         const list = res?.data?.list || [];
+        const systems = list.filter((i) => i.kind === "system_reminder");
         this.setData({
-          systemNotifications: list.map((i) => ({
+          systemNotifications: systems.map((i) => ({
             id: i.id,
-            title: i.is_read ? "系统消息" : "未读消息",
+            title: "系统通知",
             content: i.content,
             time: i.created_at
           }))
         });
+        if (markRead) {
+          const unreadIds = systems.filter((i) => !i.is_read).map((i) => i.id);
+          if (unreadIds.length) {
+            Promise.all(unreadIds.map((id) => markMessageRead(id))).catch(() => {});
+          }
+        }
       })
       .catch(() => this.setData({ systemNotifications: [] }));
   },

@@ -12,7 +12,8 @@
     "pages/profile-edit/profile-edit",
     "pages/item-detail/item-detail",
     "pages/my-items/my-items",
-    "pages/smart-search/smart-search"
+    "pages/smart-search/smart-search",
+    "pages/location-picker/location-picker"
   ],
   "window": {
     "backgroundTextStyle": "light",

@@ -1,5 +1,7 @@
+from app.core.media_url import normalize_media_url
 from app.repositories.favorite_repository import FavoriteRepository
 from app.repositories.item_repository import ItemRepository
+from app.services.recommend_service import RecommendService
 
 
 class FavoriteService:
@@ -11,6 +13,10 @@ class FavoriteService:
         exists = self.favorite_repo.get_one(user_id, item_id)
         if not exists:
             self.favorite_repo.create(user_id, item_id)
+            try:
+                RecommendService(self.favorite_repo.db).log_behavior(user_id, item_id, "favorite")
+            except Exception:
+                pass
         return True
 
     def remove(self, user_id: int, item_id: int):
@@ -32,7 +38,7 @@ class FavoriteService:
                     "id": item.id,
                     "item_type": item.item_type,
                     "title": item.title,
-                    "cover_image": imgs[0].image_url if imgs else "",
+                    "cover_image": normalize_media_url(imgs[0].image_url) if imgs else "",
                     "status": item.status,
                 }
             )

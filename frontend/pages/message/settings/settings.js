@@ -1,3 +1,5 @@
+const { me, updateProfile } = require("../../../utils/api");
+
 // 消息设置页面逻辑
 Page({
   data: {
@@ -18,13 +20,22 @@ Page({
 
   // 加载设置
   loadSettings() {
-    // 这里可以从本地存储或API获取设置
-    const savedSettings = wx.getStorageSync('notificationSettings');
-    if (savedSettings) {
+    Promise.all([me()]).then(([res]) => {
+      const data = res?.data || {};
+      const savedSettings = wx.getStorageSync('notificationSettings') || {};
       this.setData({
-        settings: savedSettings
+        settings: {
+          ...this.data.settings,
+          ...savedSettings,
+          matchNotification: !!data.match_notification_enabled
+        }
       });
-    }
+    }).catch(() => {
+      const savedSettings = wx.getStorageSync('notificationSettings');
+      if (savedSettings) {
+        this.setData({ settings: savedSettings });
+      }
+    });
   },
 
   // 返回
@@ -33,21 +44,47 @@ Page({
   },
 
   // 设置变更
-  onSettingChange(e) {
+  async onSettingChange(e) {
     const key = e.currentTarget.dataset.key;
     const value = !!e.detail.value;
-    
+
+    if (key === "matchNotification" && value) {
+      // 开启匹配通知时，申请微信订阅消息权限
+      const tmplId = getApp()?.globalData?.wechatMatchTemplateId || "";
+      if (!tmplId) {
+        wx.showToast({ title: "请先配置订阅模板ID", icon: "none" });
+        return;
+      }
+      try {
+        await new Promise((resolve, reject) => {
+          wx.requestSubscribeMessage({
+            tmplIds: [tmplId],
+            success: resolve,
+            fail: reject
+          });
+        });
+      } catch (_) {
+        wx.showToast({ title: "未授予订阅权限", icon: "none" });
+        return;
+      }
+    }
+
     const newSettings = {
       ...this.data.settings,
       [key]: value
     };
-    
+
     this.setData({
       settings: newSettings
     });
-    
+
     // 保存设置
     wx.setStorageSync('notificationSettings', newSettings);
+    if (key === "matchNotification") {
+      updateProfile({ match_notification_enabled: value }).catch(() => {
+        wx.showToast({ title: "同步服务器失败", icon: "none" });
+      });
+    }
     console.log('设置已保存:', newSettings);
   }
 });
