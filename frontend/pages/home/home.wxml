@@ -13,8 +13,12 @@
     <view class="search-input">
       🔍
       <input type="text" placeholder="搜索失物或招领..." bindinput="onSearchInput" bindconfirm="handleSearch" />
+      <button class="cert-btn {{selectedLocation ? 'active' : ''}}" bindtap="chooseFilterLocation">
+        {{selectedLocation || '地点'}}
+      </button>
       <button class="img-search-btn" bindtap="goToSmartSearch">文/图搜</button>
       <button class="filter-btn" bindtap="handleSearch">筛选</button>
+      <button class="cert-btn" bindtap="clearFilters">取消筛选</button>
     </view>
   </view>
   
@@ -60,5 +64,4 @@
     </view>
   </view>
   
-  <view class="publish-btn" bindtap="goToPublish">+</view>
 </view>

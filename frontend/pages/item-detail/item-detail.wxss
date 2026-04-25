@@ -24,3 +24,11 @@
 .comment-time { color: #999; font-size: 12px; margin-top: 4px; }
 .comment-reply-btn { color: #1a73e8; font-size: 12px; margin-top: 4px; }
 .comment-empty { color: #999; text-align: center; padding: 8px 0; }
+.related { background: #fff; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+.related-title { font-size: 16px; font-weight: 600; margin-bottom: 10px; }
+.related-list { display: flex; flex-direction: column; gap: 10px; }
+.related-card { display: flex; gap: 10px; align-items: center; }
+.related-cover { width: 56px; height: 56px; border-radius: 8px; background: #f3f3f3; flex-shrink: 0; }
+.related-body { flex: 1; min-width: 0; }
+.related-item-title { font-size: 14px; font-weight: 500; color: #222; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.related-meta { font-size: 12px; color: #888; margin-top: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

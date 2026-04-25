@@ -72,3 +72,10 @@
   color: #999;
   display: block;
 }
+
+.empty {
+  text-align: center;
+  color: #999;
+  padding: 30px 0;
+  font-size: 14px;
+}

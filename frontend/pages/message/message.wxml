@@ -12,7 +12,8 @@
         <view class="menu-title">系统通知</view>
       </view>
       <view class="menu-right">
-        <text style="font-size: 12px; color: #999;">{{unread}}条新消息</text>
+        <view class="badge" wx:if="{{systemUnread > 0}}">{{systemUnread}}</view>
+        <text class="read-status" wx:else>全部已读</text>
         <view class="menu-arrow">></view>
       </view>
     </view>
@@ -22,7 +23,8 @@
         <view class="menu-title">匹配通知</view>
       </view>
       <view class="menu-right">
-        <text style="font-size: 12px; color: #999;">{{unread}}条新消息</text>
+        <view class="badge" wx:if="{{matchUnread > 0}}">{{matchUnread}}</view>
+        <text class="read-status" wx:else>全部已读</text>
         <view class="menu-arrow">></view>
       </view>
     </view>
@@ -32,7 +34,8 @@
         <view class="menu-title">回复通知</view>
       </view>
       <view class="menu-right">
-        <text style="font-size: 12px; color: #999;">{{unread}}条新消息</text>
+        <view class="badge" wx:if="{{replyUnread > 0}}">{{replyUnread}}</view>
+        <text class="read-status" wx:else>全部已读</text>
         <view class="menu-arrow">></view>
       </view>
     </view>

@@ -13,6 +13,19 @@
     <image wx:for="{{item.images}}" wx:key="id" src="{{item.url}}" mode="aspectFill" class="img" bindtap="previewItemImage" data-index="{{index}}"></image>
   </view>
 
+  <view class="related" wx:if="{{relatedItems.length}}">
+    <view class="related-title">相关推荐</view>
+    <view class="related-list">
+      <view class="related-card" wx:for="{{relatedItems}}" wx:for-item="rel" wx:key="id" bindtap="openRelated" data-id="{{rel.id}}">
+        <image class="related-cover" src="{{rel.cover_image}}" mode="aspectFill" />
+        <view class="related-body">
+          <view class="related-item-title">{{rel.title}}</view>
+          <view class="related-meta">{{rel.status_label}} · {{rel.location_name || '地点未填'}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
   <view class="actions">
     <button class="btn" bindtap="toggleFavorite">{{isFavorite ? '取消收藏' : '收藏'}}</button>
     <button class="btn primary" bindtap="callContact">联系发布者</button>

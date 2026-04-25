@@ -1,4 +1,6 @@
 import io
+import logging
+import traceback
 from typing import Optional
 
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Query, UploadFile
@@ -45,8 +47,15 @@ async def by_image(
         raise HTTPException(status_code=400, detail="图片格式不支持")
     service = ClipService(db)
     limit = min(max(top_k, 1), 50)
-    rows, note = service.search_by_image(image=image, item_type=item_type, item_type_id=item_type_id, top_k=limit)
-    return ok({"list": rows, "note": note or ""})
+    try:
+        rows, note = service.search_by_image(image=image, item_type=item_type, item_type_id=item_type_id, top_k=limit)
+        return ok({"list": rows, "note": note or ""})
+    except RuntimeError as exc:
+        logging.getLogger(__name__).error("search_by_image: %s\n%s", exc, traceback.format_exc())
+        raise HTTPException(status_code=503, detail=f"CLIP推理失败: {exc}") from exc
+    except Exception as exc:
+        logging.getLogger(__name__).error("search_by_image: %s\n%s", exc, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="图搜服务异常") from exc
 
 
 @router.get("/by-text")
@@ -62,5 +71,14 @@ def by_text(
         raise HTTPException(status_code=503, detail=f"CLIP模型不可用: {load_err}")
     service = ClipService(db)
     limit = min(max(top_k, 1), 50)
-    rows, note = service.search_by_text(keyword=keyword.strip(), item_type=item_type, item_type_id=item_type_id, top_k=limit)
-    return ok({"list": rows, "note": note or ""})
+    try:
+        rows, note = service.search_by_text(
+            keyword=keyword.strip(), item_type=item_type, item_type_id=item_type_id, top_k=limit
+        )
+        return ok({"list": rows, "note": note or ""})
+    except RuntimeError as exc:
+        logging.getLogger(__name__).error("search_by_text: %s\n%s", exc, traceback.format_exc())
+        raise HTTPException(status_code=503, detail=f"CLIP推理失败: {exc}") from exc
+    except Exception as exc:
+        logging.getLogger(__name__).error("search_by_text: %s\n%s", exc, traceback.format_exc())
+        raise HTTPException(status_code=500, detail="文搜服务异常") from exc

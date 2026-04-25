@@ -1,27 +1,54 @@
+const { listMessages, markMessageRead } = require("../../../utils/api");
+
 Page({
   data: {
-    matchNotifications: [
-      {
-        id: 1,
-        title: '物品匹配成功',
-        content: '您发布的寻物启事与一条失物招领信息匹配度较高，点击查看详情。',
-        time: '2026-04-13 10:30'
-      },
-      {
-        id: 2,
-        title: '物品匹配成功',
-        content: '您发布的失物招领信息与一条寻物启事匹配度较高，点击查看详情。',
-        time: '2026-04-12 15:45'
-      }
-    ]
+    matchNotifications: []
   },
-  onLoad: function() {
-    console.log('匹配通知页面加载');
+
+  loadMatchMessages(markRead = false) {
+    listMessages({ page: 1, page_size: 100 })
+      .then((res) => {
+        const rows = res?.data?.list || [];
+        const matchRows = rows.filter((x) => x.kind === "match");
+        const matches = matchRows
+          .map((x) => ({
+            id: x.id,
+            itemId: x.target_item_id || x.item_id,
+            title: "物品匹配成功",
+            content: x.content || "检测到与您帖子高度相似的招领/寻物信息。",
+            time: x.created_at || "",
+            isRead: !!x.is_read
+          }));
+        this.setData({ matchNotifications: matches });
+        if (markRead) {
+          const unreadIds = matchRows.filter((m) => !m.is_read).map((m) => m.id);
+          if (unreadIds.length) {
+            Promise.all(unreadIds.map((id) => markMessageRead(id))).catch(() => {});
+          }
+        }
+      })
+      .catch(() => this.setData({ matchNotifications: [] }));
   },
-  onShow: function() {
-    console.log('匹配通知页面显示');
+
+  onLoad() {
+    this.loadMatchMessages(true);
   },
-  goBack: function() {
+
+  onShow() {
+    this.loadMatchMessages(true);
+  },
+
+  goBack() {
     wx.navigateBack();
+  },
+
+  openMatchDetail(e) {
+    const itemId = Number(e.currentTarget.dataset.itemId);
+    const messageId = Number(e.currentTarget.dataset.messageId);
+    if (messageId) {
+      markMessageRead(messageId).catch(() => {});
+    }
+    if (!itemId) return;
+    wx.navigateTo({ url: `/pages/item-detail/item-detail?id=${itemId}` });
   }
 });

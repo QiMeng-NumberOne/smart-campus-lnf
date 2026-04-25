@@ -110,6 +110,27 @@ class AIService:
         ys = [int(p[1]) for p in box]
         return [min(xs), min(ys), max(xs), max(ys)]
 
+    def _build_paddle_ocr(self):
+        from paddleocr import PaddleOCR
+
+        # 兼容 PaddleOCR 新旧版本参数差异（如 show_log / enable_mkldnn）。
+        candidates = [
+            {"use_angle_cls": True, "lang": "ch", "use_gpu": False, "enable_mkldnn": False},
+            {"use_angle_cls": True, "lang": "ch", "use_gpu": False},
+            {"lang": "ch"},
+            {},
+        ]
+        last_error = None
+        for kwargs in candidates:
+            try:
+                return PaddleOCR(**kwargs)
+            except Exception as exc:
+                last_error = exc
+                continue
+        if last_error:
+            raise last_error
+        return PaddleOCR()
+
     def _rect_intersects(self, a, b) -> bool:
         ax1, ay1, ax2, ay2 = a
         bx1, by1, bx2, by2 = b
@@ -126,9 +147,7 @@ class AIService:
 
             # 1) OCR 框选敏感文本区域
             try:
-                from paddleocr import PaddleOCR
-
-                ocr = PaddleOCR(use_angle_cls=True, lang="ch", show_log=False, use_gpu=False, enable_mkldnn=False)
+                ocr = self._build_paddle_ocr()
                 # 使用已下载的图像做 OCR，避免直接传 URL 导致偶发识别失败
                 result = ocr.ocr(ocr_input, cls=True)
                 if result and result[0]:
@@ -389,9 +408,7 @@ class AIService:
         text_blocks = []
         ocr_error = ""
         try:
-            from paddleocr import PaddleOCR
-
-            ocr = PaddleOCR(use_angle_cls=True, lang="ch", show_log=False, use_gpu=False, enable_mkldnn=False)
+            ocr = self._build_paddle_ocr()
             # 先拉取图片再识别，避免 OCR 直接读取 URL 在部分环境下拿不到内容
             # 优先传 numpy 数组；若 numpy 不可用则降级为本地临时文件路径。
             img = self._fetch_image(image_url).convert("RGB")

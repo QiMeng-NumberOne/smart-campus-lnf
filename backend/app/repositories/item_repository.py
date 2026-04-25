@@ -62,10 +62,12 @@ class ItemRepository:
     def get_item_images(self, item_id: int) -> list[ItemImage]:
         return self.db.query(ItemImage).filter(ItemImage.item_id == item_id).order_by(ItemImage.sort_order).all()
 
-    def list_by_user(self, user_id: int, page: int, page_size: int, item_type: int | None = None):
+    def list_by_user(self, user_id: int, page: int, page_size: int, item_type: int | None = None, status: int | None = None):
         q = self.db.query(Item).filter(Item.user_id == user_id, Item.is_deleted == 0)
         if item_type:
             q = q.filter(Item.item_type == item_type)
+        if status:
+            q = q.filter(Item.status == status)
         total = q.count()
         items = q.order_by(Item.created_at.desc()).offset((page - 1) * page_size).limit(page_size).all()
         return items, total

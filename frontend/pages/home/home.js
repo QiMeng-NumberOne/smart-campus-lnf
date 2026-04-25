@@ -8,7 +8,8 @@ Page({
     items: [],
     allItems: [],
     keyword: "",
-    certOnly: false
+    certOnly: false,
+    selectedLocation: ""
   },
 
   // 页面加载
@@ -87,10 +88,11 @@ Page({
   },
 
   applyFilters() {
-    const { allItems, currentCategory } = this.data;
+    const { allItems, currentCategory, selectedLocation } = this.data;
     const list = allItems.filter((item) => {
       const byCategory = currentCategory === "全部" || item.category === currentCategory;
-      return byCategory;
+      const byLocation = !selectedLocation || item.location === selectedLocation;
+      return byCategory && byLocation;
     });
     this.setData({ items: list });
   },
@@ -111,9 +113,42 @@ Page({
     });
   },
 
+  clearFilters() {
+    this.setData({
+      keyword: "",
+      selectedLocation: "",
+      currentCategory: "全部",
+      certOnly: false
+    });
+    this.loadItemsList();
+    wx.showToast({
+      title: "已取消筛选",
+      icon: "none"
+    });
+  },
+
   goToSmartSearch() {
     wx.navigateTo({
       url: "/pages/smart-search/smart-search?scope=all"
+    });
+  },
+
+  chooseFilterLocation() {
+    wx.navigateTo({
+      url: "/pages/location-picker/location-picker",
+      success: (res) => {
+        res.eventChannel.emit("initData", {
+          selected: this.data.selectedLocation || "",
+          pageTitle: "地点筛选",
+        });
+        res.eventChannel.on("locationSelected", ({ location }) => {
+          const picked = location || "";
+          const next = picked === this.data.selectedLocation ? "" : picked;
+          this.setData({ selectedLocation: next });
+          this.applyFilters();
+          wx.showToast({ title: next ? `已按地点筛选：${next}` : "已清除地点筛选", icon: "none" });
+        });
+      },
     });
   },
 
@@ -168,10 +203,5 @@ Page({
     });
   },
 
-  // 跳转到发布页面
-  goToPublish() {
-    wx.navigateTo({
-      url: '/pages/publish/publish'
-    });
-  }
+  // 首页加号已移除，保留发布入口在 TabBar
 });

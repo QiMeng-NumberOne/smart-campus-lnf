@@ -96,7 +96,7 @@
     </view>
     
     <view class="form-section">
-      <view class="form-label">丢失地点</view>
+      <view class="form-label">{{publishType === 'lost' ? '丢失地点' : '拾到地点'}}</view>
       <view class="form-select" bindtap="chooseLocation">
         {{formData.location || '选择地点'}}
         <view class="form-arrow">></view>

@@ -10,6 +10,7 @@ from sqlalchemy import and_
 from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.core.media_url import normalize_media_url
 from app.models.item import Item, ItemImage
 from app.models.item_feature import FEATURE_TYPE_CLIP_BUNDLE, ItemFeature
 
@@ -115,9 +116,21 @@ class ClipService:
         try:
             import torch
             cls._torch = torch
-            cls._device = "cuda" if (settings.clip_device == "auto" and torch.cuda.is_available()) else "cpu"
-            if settings.clip_device in ("cpu", "cuda"):
-                cls._device = settings.clip_device
+            # auto：避免「cuda.is_available()==True 但算子不支持当前显卡架构」导致 encode 时报 CUDA kernel 错误（如 RTX 50 / sm_120 与旧版 PyTorch）
+            if settings.clip_device == "cpu":
+                cls._device = "cpu"
+            elif settings.clip_device == "cuda":
+                cls._device = "cuda"
+            else:
+                cls._device = "cpu"
+                if torch.cuda.is_available():
+                    try:
+                        a = torch.randn(16, 16, device="cuda", dtype=torch.float32)
+                        torch.matmul(a, a)
+                        torch.cuda.synchronize()
+                        cls._device = "cuda"
+                    except RuntimeError:
+                        cls._device = "cpu"
             try:
                 import cn_clip.clip as clip
                 from cn_clip.clip import load_from_name
@@ -299,7 +312,7 @@ class ClipService:
             "item_type": it.item_type,
             "item_type_id": it.item_type_id,
             "title": it.title,
-            "cover_image": cover_url,
+            "cover_image": normalize_media_url(cover_url),
             "similarity": round(max(0.0, min(1.0, sim)), 4),
             "location_name": it.location_detail or "",
             "lost_found_time": str(it.lost_found_time) if it.lost_found_time else "",
@@ -435,6 +448,75 @@ class ClipService:
                 img_vec = self._encode_image(self._fetch_image_from_url(cover.image_url))
                 sim = 0.72 * self._cosine(q_vec, txt_vec) + 0.28 * self._cosine(q_vec, img_vec)
                 rows.append(self._row_dict(it, cover.image_url, sim))
+            except Exception:
+                continue
+        rows.sort(key=lambda x: x["similarity"], reverse=True)
+        return rows[:top_k]
+
+    def similar_to_item(self, item_id: int, top_k: int = 40):
+        """基于已入库 CLIP 特征，计算与指定物品最相似的其它物品（同寻物/招领类型）。"""
+        anchor_row = (
+            self.db.query(ItemFeature, Item)
+            .join(Item, Item.id == ItemFeature.item_id)
+            .filter(
+                ItemFeature.item_id == item_id,
+                ItemFeature.feature_type == FEATURE_TYPE_CLIP_BUNDLE,
+                Item.is_deleted == 0,
+            )
+            .first()
+        )
+        if not anchor_row:
+            return []
+        anchor_feat, anchor_it = anchor_row
+        vec = anchor_feat.feature_vector
+        if isinstance(vec, str):
+            import json
+
+            vec = json.loads(vec)
+        if not isinstance(vec, dict) or not self._feature_compatible(vec):
+            return []
+        ai = np.asarray(vec.get("image", []), dtype=np.float32)
+        at = np.asarray(vec.get("text", []), dtype=np.float32)
+        if ai.size == 0 or at.size == 0:
+            return []
+
+        from datetime import datetime
+
+        now = datetime.now()
+        q = (
+            self.db.query(ItemFeature, Item)
+            .join(Item, Item.id == ItemFeature.item_id)
+            .filter(
+                Item.id != item_id,
+                Item.item_type == anchor_it.item_type,
+                Item.status == 1,
+                Item.is_deleted == 0,
+                ItemFeature.feature_type == FEATURE_TYPE_CLIP_BUNDLE,
+            )
+        )
+        q = q.filter((Item.expires_at.is_(None)) | (Item.expires_at >= now))
+        pairs = q.all()
+        if not pairs:
+            return []
+        ids = [it.id for _, it in pairs]
+        covers = self._cover_map(ids)
+        rows = []
+        for feat, it in pairs:
+            try:
+                cvec = feat.feature_vector
+                if isinstance(cvec, str):
+                    import json
+
+                    cvec = json.loads(cvec)
+                if not isinstance(cvec, dict) or not self._feature_compatible(cvec):
+                    continue
+                ci = np.asarray(cvec.get("image", []), dtype=np.float32)
+                ct = np.asarray(cvec.get("text", []), dtype=np.float32)
+                if ci.size == 0 or ct.size == 0:
+                    continue
+                sim = 0.5 * self._cosine(ai, ci) + 0.5 * self._cosine(at, ct)
+                cu = covers.get(it.id, "")
+                rows.append(self._row_dict(it, cu, sim))
             except Exception:
                 continue
         rows.sort(key=lambda x: x["similarity"], reverse=True)

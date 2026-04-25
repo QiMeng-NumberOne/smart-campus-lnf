@@ -6,6 +6,19 @@ from app.models.user import User
 from app.core.security import parse_token
 
 
+def get_optional_user(
+    authorization: str | None = Header(default=None),
+    db: Session = Depends(get_db),
+) -> User | None:
+    if not authorization or not authorization.startswith("Bearer "):
+        return None
+    token = authorization.replace("Bearer ", "", 1)
+    user_id = parse_token(token)
+    if not user_id:
+        return None
+    return db.query(User).filter(User.id == user_id, User.status == 1).first()
+
+
 def get_current_user(
     authorization: str | None = Header(default=None),
     db: Session = Depends(get_db),

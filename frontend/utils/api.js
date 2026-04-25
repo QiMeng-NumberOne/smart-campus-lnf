@@ -66,6 +66,10 @@ function createItem(payload) {
   return request({ url: "/api/v1/items", method: "POST", data: payload });
 }
 
+function triggerItemMatchNotify(itemId) {
+  return request({ url: `/api/v1/items/${itemId}/match-notify`, method: "POST" });
+}
+
 function updateItemStatus(itemId, payload) {
   return request({ url: `/api/v1/items/${itemId}/status`, method: "PUT", data: payload });
 }
@@ -130,6 +134,10 @@ function me() {
   return request({ url: "/api/v1/auth/me", method: "GET" });
 }
 
+function meStats() {
+  return request({ url: "/api/v1/auth/me/stats", method: "GET" });
+}
+
 function updateProfile(payload) {
   return request({ url: "/api/v1/auth/me", method: "PUT", data: payload });
 }
@@ -142,12 +150,34 @@ function register(payload) {
   return request({ url: "/api/v1/auth/register", method: "POST", data: payload });
 }
 
+function wechatLogin(payload) {
+  return request({ url: "/api/v1/auth/wechat-login", method: "POST", data: payload });
+}
+
+function getLoginStats() {
+  return request({ url: "/api/v1/common/login-stats", method: "GET" });
+}
+
+function listRelatedItems(itemId, params = {}) {
+  const limit = params.limit != null ? params.limit : 8;
+  return request({
+    url: `/api/v1/items/${itemId}/recommendations`,
+    method: "GET",
+    data: { limit }
+  });
+}
+
+function recordRecommendEvent(payload) {
+  return request({ url: "/api/v1/recommend/events", method: "POST", data: payload });
+}
+
 module.exports = {
   uploadFile,
   searchByImage,
   searchByText,
   listItems,
   createItem,
+  triggerItemMatchNotify,
   updateItemStatus,
   recognizeItemImage,
   recognizeImageUrl,
@@ -164,7 +194,12 @@ module.exports = {
   unreadCount,
   markMessageRead,
   me,
+  meStats,
   updateProfile,
   login,
-  register
+  register,
+  wechatLogin,
+  getLoginStats,
+  listRelatedItems,
+  recordRecommendEvent
 };

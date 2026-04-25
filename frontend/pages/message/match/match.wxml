@@ -5,25 +5,18 @@
     <view></view>
   </view>
   <view class="list">
-    <view class="item">
+    <view class="item" wx:for="{{matchNotifications}}" wx:key="id" bindtap="openMatchDetail" data-item-id="{{item.itemId}}" data-message-id="{{item.id}}">
       <view class="icon">
         <text class="icon-text">匹</text>
       </view>
       <view class="content">
-        <text class="title">物品匹配成功</text>
-        <text class="desc">您发布的寻物启事与一条失物招领信息匹配度较高，点击查看详情。</text>
-        <text class="time">2026-04-13 10:30</text>
+        <text class="title">{{item.title}}</text>
+        <text class="desc">{{item.content}}</text>
+        <text class="time">{{item.time}}</text>
       </view>
     </view>
-    <view class="item">
-      <view class="icon">
-        <text class="icon-text">匹</text>
-      </view>
-      <view class="content">
-        <text class="title">物品匹配成功</text>
-        <text class="desc">您发布的失物招领信息与一条寻物启事匹配度较高，点击查看详情。</text>
-        <text class="time">2026-04-12 15:45</text>
-      </view>
+    <view class="empty" wx:if="{{!matchNotifications.length}}">
+      暂无匹配通知
     </view>
   </view>
 </view>

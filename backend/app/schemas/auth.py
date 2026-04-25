@@ -21,3 +21,10 @@ class UpdateProfileRequest(BaseModel):
     grade: str | None = None
     college: str | None = None
     major: str | None = None
+    match_notification_enabled: bool | None = None
+
+
+class WechatLoginRequest(BaseModel):
+    code: str
+    nickname: str | None = None
+    avatar: str | None = None

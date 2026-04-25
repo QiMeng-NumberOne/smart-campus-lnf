@@ -4,17 +4,18 @@ Page({
   data: {
     replyNotifications: []
   },
-  onLoad: function() {
-    this.loadData();
+  onLoad: function () {
+    this.loadData(true);
   },
-  onShow: function() {
-    this.loadData();
+  onShow: function () {
+    this.loadData(true);
   },
-  loadData() {
+  loadData(markRead = false) {
     listMessages({ page: 1, page_size: 50 })
       .then((res) => {
         const list = res?.data?.list || [];
-        const replies = list
+        const replyRows = list.filter((m) => m.kind === "comment");
+        const replies = replyRows
           .filter((m) => m.kind === "comment")
           .map((m) => ({
             id: m.id,
@@ -24,6 +25,12 @@ Page({
             time: m.created_at
           }));
         this.setData({ replyNotifications: replies });
+        if (markRead) {
+          const unreadIds = replyRows.filter((m) => !m.is_read).map((m) => m.id);
+          if (unreadIds.length) {
+            Promise.all(unreadIds.map((id) => markMessageRead(id))).catch(() => {});
+          }
+        }
       })
       .catch(() => this.setData({ replyNotifications: [] }));
   },

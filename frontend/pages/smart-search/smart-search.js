@@ -88,6 +88,11 @@ Page({
       wx.showToast({ title: "请输入关键词", icon: "none" });
       return;
     }
+    try {
+      wx.hideLoading();
+    } catch (e) {
+      /* ignore */
+    }
     wx.showLoading({ title: "文搜中..." });
     const params = { keyword, top_k: 50 };
     if (this.data.itemType != null) params.item_type = this.data.itemType;
@@ -112,6 +117,11 @@ Page({
       success: (res) => {
         const filePath = res.tempFilePaths?.[0];
         if (!filePath) return;
+        try {
+          wx.hideLoading();
+        } catch (e) {
+          /* ignore */
+        }
         wx.showLoading({ title: "图搜中..." });
         const formData = { top_k: 50 };
         if (this.data.itemType != null) formData.item_type = this.data.itemType;

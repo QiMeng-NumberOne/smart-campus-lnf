@@ -7,8 +7,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import JSONResponse
 import traceback
 
-from app.api.v1 import auth, items, favorites, common, messages, ai, search
+from app.api.v1 import auth, items, favorites, common, messages, ai, search, recommend
 from app.config import settings
+from app.services.scheduler_service import start_scheduler, stop_scheduler
 
 app = FastAPI(
     title="Smart Campus L&F API",
@@ -33,6 +34,7 @@ app.include_router(common.router, prefix="/api/v1/common", tags=["公共"])
 app.include_router(messages.router, prefix="/api/v1/messages", tags=["消息"])
 app.include_router(ai.router, prefix="/api/v1/ai", tags=["AI"])
 app.include_router(search.router, prefix="/api/v1/search", tags=["搜索"])
+app.include_router(recommend.router, prefix="/api/v1/recommend", tags=["推荐"])
 
 # 静态文件（上传的图片）
 import os
@@ -42,7 +44,24 @@ app.mount("/uploads", StaticFiles(directory=upload_dir), name="uploads")
 
 @app.get("/")
 def root():
-    return {"message": "Smart Campus L&F API", "docs": "/docs"}
+    return {
+        "message": "Smart Campus L&F API",
+        "docs": "/docs",
+        "recommend_paths": [
+            "/api/v1/items/{item_id}/recommendations?limit=10",
+            "/api/v1/recommend/related?item_id=1&limit=10",
+        ],
+    }
+
+
+@app.on_event("startup")
+async def on_startup():
+    start_scheduler()
+
+
+@app.on_event("shutdown")
+async def on_shutdown():
+    stop_scheduler()
 
 
 @app.exception_handler(Exception)

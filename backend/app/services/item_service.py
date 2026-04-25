@@ -2,11 +2,13 @@ from datetime import datetime
 from datetime import timedelta
 import logging
 
+from app.core.media_url import normalize_media_url
 from app.models.item import Item, ItemImage
 from app.repositories.item_repository import ItemRepository
 from app.schemas.item import ItemCreate
 from app.core.crypto import encrypt_text
 from app.services.ai_service import AIService
+from app.services.match_notify_service import MatchNotifyService
 
 
 def _parse_datetime(value: str | None):
@@ -69,6 +71,7 @@ class ItemService:
             )
         feature_indexed = False
         feature_note = ""
+        match_notify_count = 0
         try:
             from app.services.clip_service import ClipService
 
@@ -78,12 +81,23 @@ class ItemService:
         except Exception as exc:
             logging.getLogger(__name__).warning("refresh feature after create failed item_id=%s: %s", item.id, exc)
             feature_note = "特征写入异常，可稍后执行回填脚本"
+        # 匹配通知兜底：无论特征状态如何都尝试触发一次（内部会自行判断是否可匹配）
+        try:
+            if not feature_indexed:
+                # 再补一次特征刷新，减少“发帖当下特征尚未就绪”导致的漏通知
+                from app.services.clip_service import ClipService
+
+                feature_indexed = ClipService.refresh_item_features(self.repo.db, item.id) or feature_indexed
+            match_notify_count = MatchNotifyService(self.repo.db).notify_for_new_item(item.id)
+        except Exception as notify_exc:
+            logging.getLogger(__name__).warning("match notify failed item_id=%s: %s", item.id, notify_exc)
         return {
             "id": item.id,
             "title": item.title,
             "item_type": item.item_type,
             "feature_indexed": feature_indexed,
             "feature_note": feature_note,
+            "match_notify_count": match_notify_count,
         }
 
     def list_items(self, item_type: int | None, status: int, page: int, page_size: int, keyword: str | None = None, item_type_id: int | None = None):
@@ -96,7 +110,7 @@ class ItemService:
                 "item_type": item.item_type,
                 "item_type_id": item.item_type_id,
                 "title": item.title,
-                "cover_image": imgs[0].image_url if imgs else "",
+                "cover_image": normalize_media_url(imgs[0].image_url) if imgs else "",
                 "location_name": item.location_detail or "",
                 "lost_found_time": str(item.lost_found_time) if item.lost_found_time else "",
                 "status": item.status,
@@ -122,26 +136,38 @@ class ItemService:
             "location_detail": item.location_detail,
             "lost_found_time": str(item.lost_found_time) if item.lost_found_time else "",
             "contact_info": item.contact_info,
-            "images": [{"id": img.id, "url": img.image_url} for img in imgs],
+            "images": [{"id": img.id, "url": normalize_media_url(img.image_url)} for img in imgs],
             "expires_at": str(item.expires_at) if item.expires_at else "",
             "closed_at": str(item.closed_at) if item.closed_at else "",
             "created_at": str(item.created_at),
         }
 
-    def my_items(self, user_id: int, page: int, page_size: int, item_type: int | None = None):
-        rows, total = self.repo.list_by_user(user_id, page, page_size, item_type=item_type)
-        return {
-            "list": [
+    def my_items(self, user_id: int, page: int, page_size: int, item_type: int | None = None, status: int | None = None):
+        rows, total = self.repo.list_by_user(user_id, page, page_size, item_type=item_type, status=status)
+        def _fmt_time(dt):
+            if not dt:
+                return ""
+            return dt.strftime("%Y-%m-%d %H:%M:%S")
+        data = []
+        for item in rows:
+            imgs = self.repo.get_item_images(item.id)
+            data.append(
                 {
                     "id": item.id,
                     "item_type": item.item_type,
+                    "item_type_id": item.item_type_id,
                     "title": item.title,
+                    "description": item.description,
+                    "cover_image": normalize_media_url(imgs[0].image_url) if imgs else "",
+                    "location_detail": item.location_detail or "",
                     "status": item.status,
                     "status_label": self._status_label(item.item_type, item.status),
-                    "created_at": str(item.created_at),
+                    "created_at": _fmt_time(item.created_at),
+                    "lost_found_time": _fmt_time(item.lost_found_time),
                 }
-                for item in rows
-            ],
+            )
+        return {
+            "list": data,
             "total": total,
             "page": page,
             "page_size": page_size,

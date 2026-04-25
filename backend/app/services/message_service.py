@@ -10,6 +10,29 @@ class MessageService:
     def list_messages(self, user_id: int, page: int, page_size: int):
         rows, total = self.repo.list_for_user(user_id, page, page_size)
         def normalize_content(raw: str):
+            if raw.startswith("[MATCH_JSON]") or raw.startswith("[匹配JSON]") or raw.startswith("[ƥ��JSON]"):
+                body = (
+                    raw.replace("[MATCH_JSON]", "", 1)
+                    .replace("[匹配JSON]", "", 1)
+                    .replace("[ƥ��JSON]", "", 1)
+                )
+                try:
+                    data = json.loads(body)
+                    return {
+                        "text": data.get("text", ""),
+                        "kind": "match",
+                        "reply_to_username": None,
+                        "target_item_id": data.get("target_item_id"),
+                        "similarity": data.get("similarity"),
+                    }
+                except Exception:
+                    return {
+                        "text": body,
+                        "kind": "match",
+                        "reply_to_username": None,
+                        "target_item_id": None,
+                        "similarity": None,
+                    }
             if raw.startswith("[评论JSON]"):
                 body = raw.replace("[评论JSON]", "", 1)
                 try:
@@ -20,12 +43,40 @@ class MessageService:
                         "text": text,
                         "kind": "comment",
                         "reply_to_username": reply_to,
+                        "target_item_id": None,
+                        "similarity": None,
                     }
                 except Exception:
-                    return {"text": body, "kind": "comment", "reply_to_username": None}
+                    return {
+                        "text": body,
+                        "kind": "comment",
+                        "reply_to_username": None,
+                        "target_item_id": None,
+                        "similarity": None,
+                    }
             if raw.startswith("[评论]"):
-                return {"text": raw.replace("[评论]", "", 1), "kind": "comment", "reply_to_username": None}
-            return {"text": raw, "kind": "system", "reply_to_username": None}
+                return {
+                    "text": raw.replace("[评论]", "", 1),
+                    "kind": "comment",
+                    "reply_to_username": None,
+                    "target_item_id": None,
+                    "similarity": None,
+                }
+            if raw.startswith("[系统提醒周报"):
+                return {
+                    "text": raw,
+                    "kind": "system_reminder",
+                    "reply_to_username": None,
+                    "target_item_id": None,
+                    "similarity": None,
+                }
+            return {
+                "text": raw,
+                "kind": "system",
+                "reply_to_username": None,
+                "target_item_id": None,
+                "similarity": None,
+            }
 
         return {
             "list": [
@@ -36,6 +87,8 @@ class MessageService:
                         "content": payload["text"],
                         "kind": payload["kind"],
                         "reply_to_username": payload["reply_to_username"],
+                        "target_item_id": payload["target_item_id"],
+                        "similarity": payload["similarity"],
                         "is_read": bool(row.is_read),
                         "created_at": str(row.created_at),
                     }

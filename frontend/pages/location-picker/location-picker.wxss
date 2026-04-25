@@ -1,0 +1,57 @@
+.container {
+  height: 100vh;
+  background: #f5f6fa;
+}
+
+.search-box {
+  padding: 12px;
+  background: #fff;
+}
+
+.search-input {
+  height: 38px;
+  border-radius: 19px;
+  background: #f3f4f6;
+  padding: 0 14px;
+  font-size: 14px;
+}
+
+.content {
+  height: calc(100vh - 62px);
+  padding: 8px 12px 18px;
+  box-sizing: border-box;
+}
+
+.quick-section,
+.group {
+  margin-top: 10px;
+  padding: 12px;
+  background: #fff;
+  border-radius: 10px;
+}
+
+.section-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 10px;
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.chip {
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #f3f4f6;
+  color: #4b5563;
+  font-size: 12px;
+}
+
+.chip-active {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
