@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# Local data
+uploads/
+*.log
+*.sqlite3
+
+# Git / IDE
+.git/
+.gitignore
+.idea/
+.vscode/
+
+# Tests / docs (optional shrink)
+.pytest_cache/
+htmlcov/
